@@ -1,0 +1,148 @@
+#sl-run {
+  position: fixed;
+  inset: 0;
+  z-index: 4000;
+  display: none;
+  overflow: hidden;
+  pointer-events: none
+}
+
+#sl-run.on {
+  display: block;
+  pointer-events: all
+}
+
+#sl-run .page {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: #0a0a0a;
+  overflow: visible
+}
+
+#sl-run .page::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 64px;
+  pointer-events: none
+}
+
+#sl-run.ltr .page {
+  left: 0;
+  width: 0;
+  animation: sl-leave-ltr 2s linear forwards
+}
+
+#sl-run.ltr .page::after {
+  right: 0;
+  background: linear-gradient(90deg, rgba(10, 10, 10, 0) 0%, #c9a227 55%, #ffe27a 100%);
+  box-shadow: 8px 0 28px 6px rgba(242, 193, 78, .35)
+}
+
+#sl-run.rtl .page {
+  right: 0;
+  left: auto;
+  width: 0;
+  animation: sl-leave-rtl 2s linear forwards
+}
+
+#sl-run.rtl .page::after {
+  left: 0;
+  background: linear-gradient(270deg, rgba(10, 10, 10, 0) 0%, #c9a227 55%, #ffe27a 100%);
+  box-shadow: -8px 0 28px 6px rgba(242, 193, 78, .35)
+}
+
+#sl-run.ltr.enter .page {
+  left: 0;
+  width: 100%;
+  animation-name: sl-enter-ltr
+}
+
+#sl-run.rtl.enter .page {
+  right: auto;
+  left: 0;
+  width: 100%;
+  animation-name: sl-enter-rtl
+}
+
+html.sl-wait,
+html.sl-wait body {
+  background: #070707
+}
+
+html.sl-wait body > * {
+  visibility: hidden
+}
+
+#sl-run .rail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% + 28px);
+  height: 3px;
+  background: linear-gradient(#444, #888, #444);
+  opacity: .7
+}
+
+#sl-run .sl {
+  position: absolute;
+  top: 50%;
+  width: min(280px, 52vw);
+  margin-top: -40px;
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, .55))
+}
+
+#sl-run.ltr .sl {
+  right: 0;
+  transform: translateX(38%)
+}
+
+#sl-run.rtl .sl {
+  left: 0;
+  transform: translateX(-38%) scaleX(-1)
+}
+
+#sl-run .steam {
+  animation: sl-puff .55s ease-out infinite
+}
+
+@keyframes sl-leave-ltr {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes sl-leave-rtl {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes sl-enter-ltr {
+  from { left: 0; width: 100% }
+  to { left: 100%; width: 100% }
+}
+
+@keyframes sl-enter-rtl {
+  from { left: 0; width: 100% }
+  to { left: -100%; width: 100% }
+}
+
+@keyframes sl-puff {
+  0% {
+    opacity: .15;
+    transform: translate(0, 0) scale(.7)
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(10px, -18px) scale(1.5)
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #sl-run .page,
+  #sl-run .steam {
+    animation: none !important
+  }
+}

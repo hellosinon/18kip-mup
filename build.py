@@ -20,30 +20,21 @@ EDITIONS = {
         "url": TOKYO_URL,
         "local_ref": ROOT / "tokyo.html",
         "out": ROOT / "tokyo.html",
-        "other_link": ('<div id="links"><a href="osaka.html">大阪編'
-                       '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" '
-                       'stroke="currentColor" stroke-width="3" stroke-linecap="round" '
-                       'stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a></div>\n'),
+        "other_link": '<div id="links"><a href="index.html">選択</a></div>\n',
         "remove_link": None,
     },
     "osaka": {
         "url": OSAKA_URL,
         "local_ref": ROOT / "osaka.html",
         "out": ROOT / "osaka.html",
-        "other_link": ('<div id="links"><a href="tokyo.html">'
-                       '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" '
-                       'stroke="currentColor" stroke-width="3" stroke-linecap="round" '
-                       'stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>東京編</a></div>\n'),
+        "other_link": '<div id="links"><a href="index.html">選択</a></div>\n',
         "remove_link": None,
     },
     "hukuoka": {
         "url": HUKUOKA_URL,
         "local_ref": ROOT / "hukuoka.html",
         "out": ROOT / "hukuoka.html",
-        "other_link": ('<div id="links"><a href="tokyo.html">'
-                       '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" '
-                       'stroke="currentColor" stroke-width="3" stroke-linecap="round" '
-                       'stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>東京編</a></div>\n'),
+        "other_link": '<div id="links"><a href="index.html">選択</a></div>\n',
         "remove_link": None,
     }
 }

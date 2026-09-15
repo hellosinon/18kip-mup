@@ -258,11 +258,7 @@ EDITION_LINKS = {
 
 
 def links_html(current: str) -> str:
-    items = []
-    for key, (href, label) in EDITION_LINKS.items():
-        cls = ' class="cur"' if key == current else ""
-        items.append(f'    <a href="{href}"{cls}>{label}</a>')
-    return '<div id="links">\n' + "\n".join(items) + "\n  </div>"
+    return '<div id="links">\n    <a href="index.html">選択</a>\n  </div>'
 
 
 def mins(t: str) -> int:
@@ -701,7 +697,7 @@ def chrome() -> str:
       <ul>
         <li>駅をタップすると博多からの経路と復路の博多着を表示</li>
         <li>ピンチ / ホイールで拡大、ドラッグで移動</li>
-        <li>左上から東京編・大阪編・福岡編を切り替え</li>
+        <li>左上の選択から他の編へ戻る</li>
         <li>複数の経路がある駅はタブで切り替え</li>
       </ul>
       <h3>使用データ</h3>
@@ -735,6 +731,8 @@ def extract_js(src: str) -> str:
         "? ((depT || d.dep || d.arr) ? (depT || d.dep || d.arr) + ' 発' : '')",
     )
     js = js.replace("大阪着", "博多着")
+    if "sl-transition.js" not in js:
+        js = js.replace("</body>", '  <script src="sl-transition.js"></script>\n</body>')
     return js
 
 
@@ -773,6 +771,8 @@ def build_hukuoka() -> None:
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;700&family=Barlow:wght@500&family=Hanken+Grotesk:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="sl-transition.css">
+  <script>try{{if(sessionStorage.getItem('sl-dir'))document.documentElement.classList.add('sl-wait')}}catch(e){{}}</script>
   <script>
     (function () {{
       var u = navigator.userAgent,

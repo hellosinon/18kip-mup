@@ -10,6 +10,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;700&family=Barlow:wght@500&family=Hanken+Grotesk:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="sl-transition.css">
+  <script>try{if(sessionStorage.getItem('sl-dir'))document.documentElement.classList.add('sl-wait')}catch(e){}</script>
   <script>
     (function () {
       var u = navigator.userAgent,
@@ -1593,9 +1595,7 @@
   </div>
 
   <div id="links">
-    <a href="tokyo.html">東京編</a>
-    <a href="osaka.html">大阪編</a>
-    <a href="hukuoka.html" class="cur">福岡編</a>
+    <a href="index.html">選択</a>
   </div>
   <div id="zoom">
     <button id="in" aria-label="拡大">＋</button>
@@ -1621,7 +1621,7 @@
       <ul>
         <li>駅をタップすると博多からの経路と復路の博多着を表示</li>
         <li>ピンチ / ホイールで拡大、ドラッグで移動</li>
-        <li>左上から東京編・大阪編・福岡編を切り替え</li>
+        <li>左上の選択から他の編へ戻る</li>
         <li>複数の経路がある駅はタブで切り替え</li>
       </ul>
       <h3>使用データ</h3>
@@ -2060,6 +2060,7 @@
     setTimeout(hide, 5000);
     fit();
   </script>
+  <script src="sl-transition.js"></script>
 </body>
 
 </html>
