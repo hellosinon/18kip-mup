@@ -410,6 +410,10 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
     #links a:hover {
       background: #444
     }
+    #links a.cur {
+      border-color: #f2c14e;
+      color: #f2c14e
+    }
 
     #links a svg {
       flex: none;
@@ -474,7 +478,12 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
       color: #9aa0a8;
       font-family: 'Hanken Grotesk', sans-serif;
       font-weight: 500;
-      letter-spacing: .03em
+      letter-spacing: .03em;
+      line-height: 1.45
+    }
+
+    .ph .t .back {
+      color: #cfd4da
     }
 
     .ph .x {
@@ -600,6 +609,20 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
       color: inherit;
       font-weight: 500;
       font-family: 'Hanken Grotesk', sans-serif
+    }
+
+    li.hd {
+      height: auto;
+      padding: 10px 0 4px;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 10px;
+      color: #888;
+      letter-spacing: .08em
+    }
+
+    li.hd .nm {
+      grid-column: 1 / -1;
+      padding-left: 0
     }
 
     li.st .rail {
@@ -2764,10 +2787,12 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
     </div>
   </div>
 
-  <div id="links"><a href="tokyo.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-        stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M15 18l-6-6 6-6" />
-      </svg>東京編</a></div>
+  <div id="links">
+    <a href="index.html">選択</a>
+    <a href="tokyo.html">東京編</a>
+    <a href="osaka.html" class="cur">大阪編</a>
+    <a href="hukuoka.html">福岡編</a>
+  </div>
   <div id="zoom">
     <button id="in" aria-label="拡大">＋</button>
     <button id="out" aria-label="縮小">－</button>
@@ -2785,10 +2810,10 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
         </svg></button>
       <h2>各種到着マップ<span class="ed">大阪編</span></h2>
       <p class="en2">SEISHUN 18 KIPPU ARRIVAL TIME MAP / OSAKA</p>
-      <p>青春18きっぷを使用して、平日に大阪駅を始発で出発したときの各駅の到着時刻を等時線で表現したマップです。地図表現の都合上、主な路線および駅のみ掲載しています。</p>
+      <p>青春18きっぷを使用して、平日に大阪駅を始発で出発したときの各駅の到着時刻を等時線で表現したマップです。駅を選ぶと、その駅までの往路と、同じ所要で折り返したときの大阪着（復路）も表示します。地図表現の都合上、主な路線および駅のみ掲載しています。</p>
       <h3>使い方</h3>
       <ul>
-        <li>駅をタップすると大阪からの経路を表示</li>
+        <li>駅をタップすると大阪からの経路と復路の大阪着を表示</li>
         <li>ピンチ / ホイールで拡大、ドラッグで移動</li>
         <li>複数の経路がある駅はタブで切り替え</li>
       </ul>
@@ -2798,6 +2823,7 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
       </ul>
       <p class="cau">
         ※各駅に対して最も早く到達する列車を掲載しているため、乗換待ちの時間が長くなっている箇所があります。乗り換えのある駅の発車時刻を表示しています。
+        復路の大阪着は、到着後すぐに往路と同じ所要時間で折り返した場合の目安です。
         参考になるなら幸いです。ダイヤ改正などにより実際と異なる場合がありますので、お出かけの際は各自でお調べください。
     </div>
   </div>
@@ -2886,6 +2912,58 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
     function lineName(v) { return (v || '').split('→')[0].replace(/[（(][^）)]*[）)]/g, '').trim(); }
     function lineFull(v) { return (v || '').replace(/[（(][^）)]*[）)]/g, '').replace('→', ' → '); }
 
+    function parseAfter(t, prev) {
+      if (!t) return prev;
+      const [h, m] = t.split(':').map(Number);
+      let v = h * 60 + m;
+      if (prev != null) while (v < prev) v += 1440;
+      return v;
+    }
+    function fmtClock(v) {
+      if (v == null) return '';
+      const days = Math.floor(v / 1440);
+      const x = v - days * 1440;
+      const h = Math.floor(x / 60), m = x % 60;
+      const pad = n => String(n).padStart(2, '0');
+      return (days <= 0 ? '' : days === 1 ? '翌' : '翌々') + pad(h) + ':' + pad(m);
+    }
+    function outboundStart(route) {
+      const ne = (D.next[route[0]] || []).find(e => e.to === route[1]);
+      return (ne && ne.dep) || D.info[ORIGIN].dep;
+    }
+    function returnTrip(name, route) {
+      const arr = D.info[name] && D.info[name].arr;
+      if (!arr || name === ORIGIN || !route || route.length < 2) return null;
+      const segs = [];
+      let t = parseAfter(outboundStart(route), null);
+      for (let i = 0; i < route.length - 1; i++) {
+        const a = route[i], b = route[i + 1];
+        const ne = (D.next[a] || []).find(e => e.to === b);
+        const dep = (ne && ne.dep) || D.info[a].dep || D.info[a].arr;
+        const bArr = D.info[b].arr;
+        if (!dep || !bArr) continue;
+        const tDep = parseAfter(dep, t);
+        const tArr = parseAfter(bArr, tDep);
+        segs.push({ from: a, to: b, wait: tDep - t, run: tArr - tDep, line: (ne && ne.line) || D.info[b].line });
+        t = tArr;
+      }
+      if (!segs.length) return null;
+      const destArr = t;
+      let back = destArr;
+      const stops = [{ st: name, t: back, role: 'dep', line: segs[segs.length - 1].line }];
+      for (let i = segs.length - 1; i >= 0; i--) {
+        back += segs[i].run;
+        stops.push({
+          st: segs[i].from,
+          t: back,
+          role: 'arr',
+          line: i > 0 ? segs[i - 1].line : ''
+        });
+        if (i > 0) back += segs[i].wait;
+      }
+      return { destArr, originBack: back, stops, segs };
+    }
+
     function tipHTML(n) {
       const d = D.info[n], rows = [];
       if (d.arr && n !== ORIGIN)
@@ -2896,6 +2974,10 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
         rows.push(`<div class="r"><span class="t">${e.dep}<i>発</i></span>` +
           `<span class="l">${lineName(e.line)}</span></div>`);
       });
+      const ret = returnTrip(n, routesTo(n)[0]);
+      if (ret)
+        rows.push(`<div class="r"><span class="t">${fmtClock(ret.originBack)}<i>戻</i></span>` +
+          `<span class="l">大阪着（復路）</span></div>`);
       return `<div class="nm">${n}</div><div class="tms">${rows.join('')}</div>`;
     }
     function placeTip(x, y) {
@@ -3019,7 +3101,10 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
 
       const i = D.info[name];
       document.getElementById('pn').textContent = name;
-      document.getElementById('pt').textContent = (name === ORIGIN) ? `${i.arr} 発` : `${i.arr} 着`;
+      const ret = returnTrip(name, route);
+      document.getElementById('pt').innerHTML = ret
+        ? `${i.arr} 着<br><span class="back">${fmtClock(ret.originBack)} 大阪着</span>`
+        : ((name === ORIGIN) ? `${i.arr} 発` : `${i.arr} 着`);
       const ol = document.getElementById('po'); ol.innerHTML = '';
       route.forEach((s, idx) => {
         const d = D.info[s];
@@ -3049,6 +3134,38 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
           ol.appendChild(sg);
         }
       });
+      if (ret) {
+        const hd = document.createElement('li');
+        hd.className = 'hd';
+        hd.innerHTML = '<div class="nm">復路　同所要で折り返した目安</div>';
+        ol.appendChild(hd);
+        ret.stops.forEach((stop, j) => {
+          const s = stop.st;
+          const prevSt = j > 0 ? ret.stops[j - 1].st : null;
+          const nextSt = j < ret.stops.length - 1 ? ret.stops[j + 1].st : null;
+          const cIn = prevSt
+            ? ((D.col[s] || {})[prevSt] || (D.col[prevSt] || {})[s] || '#3a424c')
+            : '#3a424c';
+          const cOut = nextSt
+            ? ((D.col[nextSt] || {})[s] || (D.col[s] || {})[nextSt] || '#3a424c')
+            : '#3a424c';
+          const li = document.createElement('li');
+          const isLast = j === ret.stops.length - 1;
+          li.className = 'st' + (j === 0 ? ' first' : '') + (isLast ? ' last pk' : '');
+          li.style.setProperty('--cin', cIn);
+          li.style.setProperty('--cout', cOut);
+          const tm = j === 0 ? fmtClock(stop.t) + ' 発' : fmtClock(stop.t) + ' 着';
+          li.innerHTML = `<div class="tm">${tm}</div><div class="rail"><i class="dot"></i></div><div class="nm">${s}</div>`;
+          ol.appendChild(li);
+          if (!isLast) {
+            const sg = document.createElement('li');
+            sg.className = 'sg'; sg.style.setProperty('--c', cOut);
+            sg.innerHTML = `<div></div><div class="rail"></div>` +
+              `<div class="ln">${lineName(stop.line || '')}</div>`;
+            ol.appendChild(sg);
+          }
+        });
+      }
       const tabs = document.getElementById('tabs');
       if (curRoutes.length > 1) {
         tabs.className = 'on'; tabs.innerHTML = '';

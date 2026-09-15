@@ -1,14 +1,14 @@
 # 18きっぷ 到着時刻マップ
 
-(https://maps.chizutodesign.com/18kippu/)
 ## 機能
 
 - 東京駅 / 大阪駅始発・平日ダイヤでの各駅到着時刻を等時線マップで表示
+- 福岡編は博多駅始発の到達駅マップ（時刻は未記入、経路は表示可能）
 - 駅タップで始発駅からの経路と時刻表を表示
 - ピンチ / ホイールで拡大・縮小、ドラッグで移動
 - 複数経路がある駅はタブで切り替え
 - スマホ対応（下部パネル）
-- 東京編・大阪編を相互リンク
+- トップページと各マップ左上から東京編・大阪編・福岡編を切り替え
 
 - 追加したい機能
 - 土日祝ダイヤへの対応
@@ -19,7 +19,7 @@
 
 ### 方法1: ブラウザで直接開く
 
-`東京.html` または `大阪.html` をダブルクリックしてブラウザで開きます。
+`index.html` を開いて東京編・大阪編・福岡編を選びます。直接 `tokyo.html` / `osaka.html` / `hukuoka.html` を開くこともできます。
 
 ### 方法2: ローカルサーバー（推奨）F
 
@@ -34,8 +34,10 @@ http://localhost:8000/index.html
 
 ```
 2026製作/
-├── 東京.html              # 東京始発版（メインアプリ）
-├── 大阪.html              # 大阪始発版（メインアプリ）
+├── index.html             # 東京 / 大阪 / 福岡の選択画面
+├── tokyo.html             # 東京始発版
+├── osaka.html             # 大阪始発版
+├── hukuoka.html           # 福岡（博多）始発版
 ├── reference_tokyo.html   # 公式サイト取得元（東京）
 ├── reference_osaka.html   # 公式サイト取得元（大阪）
 ├── build.py               # 東京.html / 大阪.html 生成スクリプト
@@ -44,8 +46,11 @@ http://localhost:8000/index.html
 │   ├── 東京/
 │   │   ├── timetable.json
 │   │   └── map.svg
-│   └── 大阪/
-│       ├── timetable.json
+│   ├── 大阪/
+│   │   ├── timetable.json
+│   │   └── map.svg
+│   └── 福岡/
+│       ├── timetable.json      # 博多始発の駅・経路（時刻は未記入）
 │       └── map.svg
 └── README.md
 ```
@@ -64,8 +69,13 @@ python build.py
 - **路線図**: `data/東京/map.svg` または `data/大阪/map.svg` を編集
 
 
-- オリジナル（東京）: [18きっぷ 到着時刻マップ 2026](https://maps.chizutodesign.com/18kippu/)
-- オリジナル（大阪）: [18きっぷ 到着時刻マップ 大阪編](https://maps.chizutodesign.com/18kippu/osaka/)
 
 ## 注意
 
+今後変更するには
+
+git add .
+git commit -m "変更内容"
+git push
+
+で変更できる

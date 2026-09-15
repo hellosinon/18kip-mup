@@ -1,0 +1,1813 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>各種到着マップ 福岡編</title>
+  <meta name="description" content="青春18きっぷで平日に博多駅を始発で出発したとき、各駅に何時に到着できるかを等時線で表したマップです。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;700&family=Barlow:wght@500&family=Hanken+Grotesk:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700&display=swap">
+  <script>
+    (function () {
+      var u = navigator.userAgent,
+        ios = /iPhone|iPad|iPod/.test(u) || (/Macintosh/.test(u) && navigator.maxTouchPoints > 1),
+        mac = /Macintosh/.test(u) && /Safari/.test(u) && !/Chrome|Chromium|Edg|OPR|Android/.test(u);
+      if (ios || mac) document.documentElement.classList.add('is-safari');
+    })();
+  </script>
+  <style>
+    *:not(svg *) {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Atkinson Hyperlegible Mono', 'Noto Sans JP', 'Helvetica Neue', Arial, sans-serif
+    }
+
+    svg * {
+      box-sizing: border-box
+    }
+
+    /* ヘッダの画面上部に固定。背景は半透明の黒で、背後をぼかす */
+    html,
+    body {
+      height: 100%;
+      background: #000;
+      overflow: hidden;
+      -webkit-user-select: none;
+      user-select: none;
+      font-weight: 400;
+      -webkit-tap-highlight-color: transparent
+    }
+
+    #map {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+      cursor: grab;
+      display: block;
+      -webkit-user-select: none;
+      user-select: none
+    }
+
+    #map text {
+      -webkit-user-select: none;
+      user-select: none
+    }
+
+    #map ::selection {
+      background: transparent
+    }
+
+    #map.dragging {
+      cursor: grabbing
+    }
+
+    #map circle[data-st] {
+      pointer-events: all;
+      stroke: transparent;
+      stroke-width: 5
+    }
+
+    #map [data-st] {
+      cursor: pointer
+    }
+
+    #map g[data-st] text {
+      pointer-events: all
+    }
+
+    #map .onl {
+      display: none
+    }
+
+    #map.sel .onl.on {
+      display: inline
+    }
+
+    #map.sel circle[data-st].on {
+      opacity: 0
+    }
+
+    /* CSS の filter 宣言は SVG の filter 属性を上書きするので、Safari 以外に限定する
+     （Safari では属性で url(#glow) を付けてグローを出す。下の Safari 用ブロック参照） */
+    html:not(.is-safari) #map .hov {
+      filter: drop-shadow(0 0 2.5px #f2c14e) drop-shadow(0 0 5px rgba(242, 193, 78, .55))
+    }
+
+    #map.sel [data-note],
+    #map.sel [data-e]:not(.on),
+    #map.sel [data-sn]:not(.on) {
+      filter: grayscale(1) brightness(.45);
+      opacity: .55;
+      transition: opacity .2s, filter .2s
+    }
+
+    html:not(.is-safari) #map.sel .on {
+      filter: drop-shadow(0 0 2px rgba(242, 193, 78, .8)) drop-shadow(0 0 5px rgba(242, 193, 78, .45))
+    }
+
+    html:not(.is-safari) #map.sel .on.pick {
+      filter: drop-shadow(0 0 2.5px #f2c14e) drop-shadow(0 0 7px rgba(242, 193, 78, .75))
+    }
+
+    /* --- Safari 用の差し替え --- */
+    /* filter（grayscale / drop-shadow）が SVG 要素に効かないので、
+     グレーアウトは opacity、グローは text-shadow で作る */
+    .is-safari #map.sel [data-note],
+    .is-safari #map.sel [data-e]:not(.on),
+    .is-safari #map.sel [data-sn]:not(.on) {
+      filter: none;
+      opacity: .16;
+      transition: opacity .2s
+    }
+
+    /* 選択時のグローは図形もラベルも SVG の filter 属性で付ける（applyGlow）。
+     ホバーだけは filter を使わないので text-shadow で代替する */
+    .is-safari #map .hov text {
+      text-shadow: 0 0 2px rgba(242, 193, 78, .95), 0 0 5px rgba(242, 193, 78, .55)
+    }
+
+    /* 縦書きの字送りが広くなるぶんを詰める */
+    .is-safari #map text[writing-mode] {
+      letter-spacing: -0.5em
+    }
+
+    /* ホバー時の吹き出し */
+    #tip {
+      position: fixed;
+      z-index: 13;
+      pointer-events: none;
+      display: none;
+      background: rgba(8, 10, 13, .95);
+      border: 1px solid #2b3038;
+      border-radius: 7px;
+      padding: 9px 12px;
+      backdrop-filter: blur(8px);
+      white-space: nowrap;
+      min-width: 96px
+    }
+
+    #tip.on {
+      display: block
+    }
+
+    @media (hover:none) {
+
+      #tip,
+      #tip.on {
+        display: none
+      }
+    }
+
+    /* 保険 */
+    #tip .nm {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.3
+    }
+
+    #tip .tms {
+      margin-top: 5px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px
+    }
+
+    #tip .r {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0 10px;
+      align-items: baseline
+    }
+
+    #tip .t,
+    #tip .t * {
+      font-family: 'Hanken Grotesk', sans-serif
+    }
+
+    #tip .t {
+      font-weight: 500;
+      font-size: 12px;
+      color: #9aa0a8;
+      letter-spacing: .02em;
+      white-space: nowrap
+    }
+
+    #tip .t i {
+      font-style: normal;
+      font-size: 10px;
+      color: #6f767f;
+      margin-left: 2px
+    }
+
+    #tip .l {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 10.5px;
+      color: #7d848d
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      width: calc(100% - 60px);
+      max-width: 500px;
+      background: rgba(0, 0, 0, .6);
+      border: 1px solid #555;
+      border-top: none;
+      border-radius: 0 0 16px 16px;
+      padding: 8px 15px;
+      text-align: center;
+      pointer-events: none;
+      -webkit-backdrop-filter: blur(5px);
+      backdrop-filter: blur(5px)
+    }
+
+    /* ヘッダの画面上部に固定。背景は半透明の黒で、背後をぼかす */
+    h1 {
+      margin: 0;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: clamp(1.05rem, 4.5vw, 1.25rem);
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 0 10px rgba(255, 255, 255, .3);
+      letter-spacing: .2em;
+      white-space: nowrap
+    }
+
+    /* 英語の表記 */
+    p.en {
+      margin: 3px 0 0;
+      font-family: 'Atkinson Hyperlegible Mono', monospace;
+      font-weight: 700;
+      font-size: .68rem;
+      color: #888;
+      letter-spacing: .42em;
+      white-space: nowrap
+    }
+
+    /* 「大阪編」のような版名。角丸の白囲みにして、その場合だけ表題を小さくする */
+    .ed {
+      display: inline-block;
+      border: 1.5px solid rgba(255, 255, 255, .9);
+      border-radius: 7px;
+      padding: 0 .42em .06em;
+      margin-left: .5em;
+      font-size: .6em;
+      letter-spacing: .1em;
+      vertical-align: .16em;
+      text-shadow: none
+    }
+
+    /* バージョン別のヘッダ */
+    header.ver h1 {
+      font-size: clamp(.85rem, 4vw, 1.35rem);
+      letter-spacing: .13em
+    }
+
+    header.ver p.en {
+      font-size: .58rem;
+      letter-spacing: .3em
+    }
+
+    .ab h2 .ed {
+      border-width: 1.2px;
+      font-size: .58em
+    }
+
+    @media (max-width:560px) {
+      header.ver p.en {
+        font-size: .46rem;
+        letter-spacing: .2em
+      }
+    }
+
+    @media (max-width:560px) {
+      header {
+        width: calc(100% - 40px);
+        padding: 12px 15px
+      }
+
+      p.en {
+        font-size: .52rem;
+        letter-spacing: .26em
+      }
+    }
+
+    button {
+      background: rgba(0, 0, 0, .6);
+      border: 1px solid #555;
+      color: #fff;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background .2s;
+      -webkit-backdrop-filter: blur(5px);
+      backdrop-filter: blur(5px)
+    }
+
+    button:hover {
+      background: #444
+    }
+
+    button:focus-visible {
+      outline: 2px solid #888;
+      outline-offset: 2px
+    }
+
+    #zoom {
+      position: fixed;
+      top: 30px;
+      right: 30px;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: 10px
+    }
+
+    #zoom button {
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
+      border-radius: 5px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 400;
+      color: #fff;
+      border: 1px solid #555;
+      background: rgba(0, 0, 0, .6);
+      transition: background .2s
+    }
+
+    #zoom button:hover {
+      background: #444;
+      border-color: #555;
+      color: #fff
+    }
+
+    @media (max-width:560px) {
+      #zoom {
+        top: 110px;
+        right: 20px
+      }
+    }
+
+    /* 他の版へのリンク（左上）。opts.py の LINKS がある版だけ出る */
+    #links {
+      position: fixed;
+      top: 30px;
+      left: 30px;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: 10px
+    }
+
+    #links a {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      height: 40px;
+      padding: 0 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      font-family: 'Noto Sans JP', sans-serif;
+      color: #fff;
+      white-space: nowrap;
+      border: 1px solid #555;
+      background: rgba(0, 0, 0, .6);
+      transition: background .2s;
+      -webkit-backdrop-filter: blur(5px);
+      backdrop-filter: blur(5px)
+    }
+
+    #links a:hover {
+      background: #444
+    }
+    #links a.cur {
+      border-color: #f2c14e;
+      color: #f2c14e
+    }
+
+    #links a svg {
+      flex: none;
+      opacity: .75
+    }
+
+    @media (max-width:560px) {
+      #links {
+        top: 110px;
+        left: 20px
+      }
+
+      #links a {
+        height: 36px;
+        padding: 0 11px;
+        font-size: 12px
+      }
+    }
+
+    #panel {
+      position: fixed;
+      z-index: 200;
+      right: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 270px;
+      max-height: min(64vh, calc(100vh - 200px));
+      background: rgba(0, 0, 0, .6);
+      border: 1px solid #555;
+      border-radius: 16px;
+      display: none;
+      flex-direction: column;
+      -webkit-backdrop-filter: blur(5px);
+      backdrop-filter: blur(5px)
+    }
+
+    #panel.open {
+      display: flex
+    }
+
+    #grip {
+      display: none
+    }
+
+    .ph {
+      padding: 14px 18px 12px;
+      border-bottom: 1px solid #444;
+      position: relative;
+      flex: none
+    }
+
+    .ph .n {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff
+    }
+
+    .ph .t {
+      margin-top: 3px;
+      font-size: 12px;
+      color: #9aa0a8;
+      font-family: 'Hanken Grotesk', sans-serif;
+      font-weight: 500;
+      letter-spacing: .03em;
+      line-height: 1.45
+    }
+
+    .ph .t .back {
+      color: #cfd4da
+    }
+
+    .ph .x {
+      position: absolute;
+      right: 12px;
+      top: 12px;
+      border: none;
+      background: none;
+      color: #888;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+      transition: color .2s
+    }
+
+    .ph .x:hover {
+      color: #fff;
+      background: none
+    }
+
+    #tabs {
+      display: none;
+      gap: 6px;
+      padding: 9px 16px 0;
+      flex: none
+    }
+
+    #tabs.on {
+      display: flex
+    }
+
+    #tabs button {
+      padding: 5px 11px;
+      font-size: 11px;
+      border-radius: 999px
+    }
+
+    #tabs button.sel {
+      border-color: #f2c14e;
+      color: #f2c14e;
+      background: rgba(242, 193, 78, .1)
+    }
+
+    .pb {
+      overflow-y: scroll;
+      padding: 12px 16px calc(20px + env(safe-area-inset-bottom));
+      scrollbar-width: thin;
+      scrollbar-color: #555 transparent
+    }
+
+    .pb::-webkit-scrollbar {
+      width: 6px
+    }
+
+    .pb::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, .05);
+      border-radius: 3px
+    }
+
+    .pb::-webkit-scrollbar-thumb {
+      background: #555;
+      border-radius: 3px
+    }
+
+    .pb::-webkit-scrollbar-thumb:hover {
+      background: #777
+    }
+
+    .ab {
+      scrollbar-width: thin;
+      scrollbar-color: #555 transparent
+    }
+
+    .ab::-webkit-scrollbar {
+      width: 6px
+    }
+
+    .ab::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, .05);
+      border-radius: 3px
+    }
+
+    .ab::-webkit-scrollbar-thumb {
+      background: #555;
+      border-radius: 3px
+    }
+
+    ol {
+      list-style: none
+    }
+
+    ol li {
+      display: grid;
+      grid-template-columns: 52px 14px 1fr;
+      gap: 0 9px;
+      align-items: stretch
+    }
+
+    li.st {
+      height: 30px
+    }
+
+    li.st .tm,
+    li.st .tm * {
+      font-family: 'Hanken Grotesk', sans-serif
+    }
+
+    li.st .tm {
+      align-self: center;
+      text-align: right;
+      font-weight: 500;
+      font-size: 11px;
+      color: #9aa0a8;
+      line-height: 1.18;
+      letter-spacing: .02em
+    }
+
+    li.st .tm b {
+      display: block;
+      color: inherit;
+      font-weight: 500;
+      font-family: 'Hanken Grotesk', sans-serif
+    }
+
+    li.hd {
+      height: auto;
+      padding: 10px 0 4px;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 10px;
+      color: #888;
+      letter-spacing: .08em
+    }
+
+    li.hd .nm {
+      grid-column: 1 / -1;
+      padding-left: 0
+    }
+
+    li.st .rail {
+      position: relative
+    }
+
+    li.st .rail::before,
+    li.st .rail::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      width: 2px;
+      margin-left: -1px;
+      z-index: 0
+    }
+
+    li.st .rail::before {
+      top: 0;
+      height: 50%;
+      background: var(--cin, #3a424c)
+    }
+
+    li.st .rail::after {
+      top: 50%;
+      bottom: 0;
+      background: var(--cout, #3a424c)
+    }
+
+    li.st.first .rail::before {
+      display: none
+    }
+
+    li.st.last .rail::after {
+      display: none
+    }
+
+    li.st .dot {
+      position: absolute;
+      z-index: 1;
+      left: 50%;
+      top: 50%;
+      width: 7px;
+      height: 7px;
+      margin: -3.5px 0 0 -3.5px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 0 0 1.5px #0d1013
+    }
+
+    li.st.thru .dot {
+      background: var(--cin, #fff)
+    }
+
+    li.st .nm {
+      align-self: center;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #e8eaed
+    }
+
+    li.st.pk .nm {
+      color: #fff
+    }
+
+    li.sg {
+      height: 20px
+    }
+
+    li.sg .rail {
+      position: relative
+    }
+
+    li.sg .rail::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      margin-left: -1px;
+      background: var(--c, #3a424c)
+    }
+
+    li.sg .ln {
+      align-self: center;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 10.5px;
+      color: #7d848d;
+      line-height: 1.3
+    }
+
+    #info {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 100;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 20px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s, bottom .3s
+    }
+
+    #info:hover {
+      background: rgba(80, 80, 80, .8)
+    }
+
+    @media (max-width:560px) {
+      #info {
+        bottom: 20px;
+        right: 20px;
+        width: 36px;
+        height: 36px;
+        font-size: 18px
+      }
+    }
+
+    #about {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0, 0, 0, .5);
+      -webkit-backdrop-filter: blur(5px);
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s
+    }
+
+    #about.open {
+      opacity: 1;
+      pointer-events: auto
+    }
+
+    .ab {
+      position: relative;
+      background: rgba(0, 0, 0, .6);
+      border: 1px solid #555;
+      border-radius: 16px;
+      padding: 30px;
+      max-width: 450px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      color: #fff;
+      -webkit-backdrop-filter: blur(5px);
+      backdrop-filter: blur(5px);
+      -webkit-user-select: text;
+      user-select: text
+    }
+
+    .ab h2 {
+      margin: 0 0 5px;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
+      letter-spacing: .18em
+    }
+
+    .ab .en2 {
+      margin: 0 0 20px;
+      font-family: 'Atkinson Hyperlegible Mono', monospace;
+      font-weight: 700;
+      font-size: .62rem;
+      color: #888;
+      text-align: center;
+      letter-spacing: .28em
+    }
+
+    .ab h3 {
+      margin: 20px 0 10px;
+      font-size: .9rem;
+      color: #888;
+      border-bottom: 1px solid #444;
+      padding-bottom: 5px
+    }
+
+    .ab p,
+    .ab li,
+    .ab h3 {
+      font-family: 'Noto Sans JP', sans-serif
+    }
+
+    .ab p,
+    .ab li {
+      font-size: .9rem;
+      line-height: 1.6;
+      color: #ccc
+    }
+
+    .ab ul {
+      margin: 0;
+      padding-left: 20px
+    }
+
+    .ab .cau {
+      margin-top: 20px;
+      font-size: .78rem;
+      line-height: 1.8;
+      color: #888
+    }
+
+    .ab .cr {
+      margin-top: 25px;
+      text-align: center;
+      font-size: .85rem
+    }
+
+    .ab .cr a {
+      color: #888;
+      text-decoration: underline;
+      transition: color .2s
+    }
+
+    .ab .cr a:hover {
+      color: #fff
+    }
+
+    .ab .x {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: #888;
+      padding: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+      transition: color .2s
+    }
+
+    .ab .x:hover {
+      color: #fff;
+      background: none
+    }
+
+    @media (max-width:560px) {
+      .ab {
+        padding: 20px
+      }
+
+      .ab h2 {
+        font-size: 1.25rem
+      }
+    }
+
+    /* 初回アクセス時のヒント。画面中央に固定。 */
+    #hint {
+      font-family: 'Noto Sans JP', sans-serif;
+      position: fixed;
+      z-index: 11;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(10, 12, 15, .9);
+      border: 1px solid #2b3038;
+      border-radius: 6px;
+      padding: 16px 20px;
+      color: #cfd4da;
+      font-size: 12px;
+      line-height: 1.9;
+      text-align: center;
+      transition: opacity .5s;
+      pointer-events: none
+    }
+
+    #hint.gone {
+      opacity: 0
+    }
+
+    @media (max-width:560px) {
+      #panel {
+        left: 50%;
+        right: auto;
+        top: auto;
+        bottom: 0;
+        transform: translateX(-50%);
+        width: calc(100% - 40px);
+        max-width: 500px;
+        max-height: 38vh;
+        margin: 0;
+        background: rgba(0, 0, 0, .6);
+        border: 1px solid #555;
+        border-bottom: none;
+        border-radius: 16px 16px 0 0;
+        transition: transform .26s cubic-bezier(.32, .72, 0, 1),
+          max-height .26s cubic-bezier(.32, .72, 0, 1)
+      }
+
+      #panel.min {
+        transform: translateX(-50%) translateY(calc(100% - 64px))
+      }
+
+      #panel.max {
+        max-height: 78vh
+      }
+
+      .ph .x {
+        top: 0
+      }
+
+      #grip {
+        display: flex;
+        padding: 8px 0 0;
+        justify-content: center;
+        cursor: grab;
+        flex: none;
+        touch-action: none
+      }
+
+      #grip::before {
+        content: "";
+        width: 38px;
+        height: 4px;
+        border-radius: 2px;
+        background: #555
+      }
+
+      .ph {
+        padding: 2px 16px 10px;
+        touch-action: none
+      }
+
+      /* 上下ドラッグを拾う */
+      #info,
+      #zoom {
+        bottom: auto
+      }
+
+      #info {
+        bottom: 24px
+      }
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+      #hint {
+        transition: none
+      }
+    }
+
+    #links a.cur {
+      border-color: #f2c14e;
+      color: #f2c14e
+    }
+  </style>
+</head>
+
+<body>
+<svg id="map" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 595.3 841.9">
+    <defs>
+      <filter id="glow" filterUnits="userSpaceOnUse" x="0" y="0" width="595.3" height="841.9"
+        color-interpolation-filters="sRGB">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="1.5" result="b1" />
+        <feFlood flood-color="#f2c14e" flood-opacity="0.85" result="f1" />
+        <feComposite in="f1" in2="b1" operator="in" result="g1" />
+        <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="b2" />
+        <feFlood flood-color="#f2c14e" flood-opacity="0.5" result="f2" />
+        <feComposite in="f2" in2="b2" operator="in" result="g2" />
+        <feMerge>
+          <feMergeNode in="g2" />
+          <feMergeNode in="g2" />
+          <feMergeNode in="g1" />
+          <feMergeNode in="g1" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+      <filter id="glowPick" filterUnits="userSpaceOnUse" x="0" y="0" width="595.3" height="841.9"
+        color-interpolation-filters="sRGB">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="2" result="b1" />
+        <feFlood flood-color="#f2c14e" flood-opacity="1" result="f1" />
+        <feComposite in="f1" in2="b1" operator="in" result="g1" />
+        <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="b2" />
+        <feFlood flood-color="#f2c14e" flood-opacity="0.75" result="f2" />
+        <feComposite in="f2" in2="b2" operator="in" result="g2" />
+        <feMerge>
+          <feMergeNode in="g2" />
+          <feMergeNode in="g2" />
+          <feMergeNode in="g1" />
+          <feMergeNode in="g1" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+    </defs>
+    <rect width="595.3" height="841.9" fill="#000" />
+    <circle cx="365.7" cy="493.2" r="17.01" fill="none" stroke="#595757" stroke-width="0.5" stroke-dasharray="2,1.5" />
+    <circle cx="365.7" cy="493.2" r="34.02" fill="none" stroke="#595757" stroke-width="0.5" stroke-dasharray="2,1.5" />
+    <circle cx="365.7" cy="493.2" r="51.03" fill="none" stroke="#595757" stroke-width="0.75" />
+    <circle cx="365.7" cy="493.2" r="68.04" fill="none" stroke="#595757" stroke-width="0.5" stroke-dasharray="2,1.5" />
+    <circle cx="365.7" cy="493.2" r="85.05" fill="none" stroke="#595757" stroke-width="0.5" stroke-dasharray="2,1.5" />
+    <circle cx="365.7" cy="493.2" r="102.06" fill="none" stroke="#595757" stroke-width="0.75" />
+    <circle cx="365.7" cy="493.2" r="119.07" fill="none" stroke="#595757" stroke-width="0.5" stroke-dasharray="2,1.5" />
+    <circle cx="365.7" cy="493.2" r="136.08" fill="none" stroke="#595757" stroke-width="0.5" stroke-dasharray="2,1.5" />
+    <circle cx="365.7" cy="493.2" r="153.09" fill="none" stroke="#595757" stroke-width="0.75" />
+    <circle cx="365.7" cy="493.2" r="170.10" fill="none" stroke="#595757" stroke-width="0.5" stroke-dasharray="2,1.5" />
+    <circle cx="365.7" cy="493.2" r="187.11" fill="none" stroke="#595757" stroke-width="0.5" stroke-dasharray="2,1.5" />
+    <circle cx="365.7" cy="493.2" r="204.12" fill="none" stroke="#595757" stroke-width="0.75" />
+    <circle cx="365.7" cy="493.2" r="221.13" fill="none" stroke="#595757" stroke-width="0.5" stroke-dasharray="2,1.5" />
+    <circle cx="365.7" cy="493.2" r="238.14" fill="none" stroke="#595757" stroke-width="0.5" stroke-dasharray="2,1.5" />
+    <circle cx="365.7" cy="493.2" r="255.15" fill="none" stroke="#595757" stroke-width="0.75" />
+    <circle cx="365.7" cy="493.2" r="272.16" fill="none" stroke="#595757" stroke-width="0.5" stroke-dasharray="2,1.5" />
+    <circle cx="365.7" cy="493.2" r="289.17" fill="none" stroke="#595757" stroke-width="0.5" stroke-dasharray="2,1.5" />
+    <circle cx="365.7" cy="493.2" r="306.18" fill="none" stroke="#595757" stroke-width="0.75" />
+    <circle cx="365.7" cy="493.2" r="323.19" fill="none" stroke="#595757" stroke-width="0.5" stroke-dasharray="2,1.5" />
+    <line data-e="博多&gt;小倉" data-sn="博多" x1="365.70" y1="493.20" x2="370.18" y2="493.59" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="博多&gt;鳥栖" data-sn="博多" x1="365.70" y1="493.20" x2="366.33" y2="497.66" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="小倉&gt;門司" data-sn="小倉" x1="384.06" y1="494.81" x2="384.64" y2="490.34" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="小倉&gt;行橋" data-sn="小倉" x1="384.06" y1="494.81" x2="386.67" y2="498.47" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="門司&gt;下関" data-sn="門司" x1="385.20" y1="486.10" x2="384.92" y2="482.24" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="下関&gt;新山口" data-sn="下関" x1="384.74" y1="479.87" x2="385.18" y2="474.10" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="新山口&gt;防府" data-sn="新山口" x1="386.73" y1="453.65" x2="384.59" y2="449.69" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="防府&gt;徳山" data-sn="防府" x1="382.77" y1="446.31" x2="380.94" y2="442.20" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="徳山&gt;岩国" data-sn="徳山" x1="377.96" y1="435.52" x2="376.64" y2="431.22" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="岩国&gt;宮島口" data-sn="岩国" x1="373.35" y1="420.46" x2="372.26" y2="416.09" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="宮島口&gt;広島" data-sn="宮島口" x1="370.18" y1="407.70" x2="367.40" y2="404.82" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="広島&gt;西条" data-sn="広島" x1="365.70" y1="403.05" x2="366.44" y2="398.61" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="西条&gt;三原" data-sn="西条" x1="367.46" y1="392.57" x2="368.61" y2="388.22" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="三原&gt;福山" data-sn="三原" x1="369.48" y1="384.97" x2="368.44" y2="380.59" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="福山&gt;岡山" data-sn="福山" x1="367.72" y1="377.55" x2="367.27" y2="372.56" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="行橋&gt;中津" data-sn="行橋" x1="389.88" y1="502.97" x2="393.19" y2="506.03" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="中津&gt;宇佐" data-sn="中津" x1="397.74" y1="510.24" x2="399.44" y2="514.22" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="宇佐&gt;別府" data-sn="宇佐" x1="400.48" y1="516.66" x2="402.94" y2="520.43" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="別府&gt;大分" data-sn="別府" x1="408.70" y1="529.28" x2="408.39" y2="533.26" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="大分&gt;佐伯" data-sn="大分" x1="408.20" y1="535.70" x2="410.80" y2="540.09" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="佐伯&gt;延岡" data-sn="佐伯" x1="420.01" y1="555.68" x2="422.96" y2="561.00" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="延岡&gt;日向市" data-sn="延岡" x1="433.42" y1="579.88" x2="434.89" y2="584.13" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="日向市&gt;高鍋" data-sn="日向市" x1="437.69" y1="592.28" x2="438.66" y2="596.67" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="高鍋&gt;宮崎" data-sn="高鍋" x1="441.67" y1="610.18" x2="440.89" y2="614.61" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="宮崎&gt;南宮崎" data-sn="宮崎" x1="439.69" y1="621.36" x2="437.55" y2="624.15" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="鳥栖&gt;久留米" data-sn="鳥栖" x1="368.19" y1="510.89" x2="364.71" y2="513.71" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="鳥栖&gt;佐賀" data-sn="鳥栖" x1="368.19" y1="510.89" x2="363.51" y2="509.19" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="久留米&gt;大牟田" data-sn="久留米" x1="362.58" y1="515.43" x2="358.92" y2="517.01" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="大牟田&gt;玉名" data-sn="大牟田" x1="356.68" y1="517.98" x2="355.12" y2="518.67" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="玉名&gt;熊本" data-sn="玉名" x1="354.17" y1="519.10" x2="354.69" y2="523.44" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="熊本&gt;八代" data-sn="熊本" x1="355.01" y1="526.09" x2="354.17" y2="530.52" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="八代&gt;新八代" data-sn="八代" x1="352.57" y1="538.98" x2="351.36" y2="541.19" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="新八代&gt;出水" data-sn="新八代" x1="350.61" y1="542.54" x2="350.31" y2="547.37" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="出水&gt;川内" data-sn="出水" x1="349.25" y1="564.47" x2="349.05" y2="568.96" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="川内&gt;鹿児島中央" data-sn="川内" x1="348.50" y1="581.70" x2="348.10" y2="586.18" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="佐賀&gt;肥前山口" data-sn="佐賀" x1="346.93" y1="503.18" x2="348.38" y2="506.17" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="佐賀&gt;武雄温泉" data-sn="佐賀" x1="346.93" y1="503.18" x2="342.43" y2="502.96" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="肥前山口&gt;諫早" data-sn="肥前山口" x1="349.27" y1="508.00" x2="346.12" y2="512.25" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="諫早&gt;長崎" data-sn="諫早" x1="334.97" y1="527.33" x2="332.59" y2="531.15" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="武雄温泉&gt;有田" data-sn="武雄温泉" x1="336.58" y1="502.66" x2="332.70" y2="500.38" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="有田&gt;佐世保" data-sn="有田" x1="329.20" y1="498.33" x2="325.25" y2="496.18" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="博多&gt;小倉" x1="370.18" y1="493.59" x2="384.06" y2="494.81" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="博多&gt;鳥栖" x1="366.33" y1="497.66" x2="368.19" y2="510.89" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="小倉&gt;門司" x1="384.64" y1="490.34" x2="385.20" y2="486.10" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="小倉&gt;行橋" x1="386.67" y1="498.47" x2="389.88" y2="502.97" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="門司&gt;下関" x1="384.92" y1="482.24" x2="384.74" y2="479.87" stroke="#0099D9" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="下関&gt;新山口" x1="385.18" y1="474.10" x2="386.73" y2="453.65" stroke="#0099D9" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="新山口&gt;防府" x1="384.59" y1="449.69" x2="382.77" y2="446.31" stroke="#0099D9" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="防府&gt;徳山" x1="380.94" y1="442.20" x2="377.96" y2="435.52" stroke="#0099D9" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="徳山&gt;岩国" x1="376.64" y1="431.22" x2="373.35" y2="420.46" stroke="#0099D9" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="岩国&gt;宮島口" x1="372.26" y1="416.09" x2="370.18" y2="407.70" stroke="#0099D9" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="宮島口&gt;広島" x1="367.40" y1="404.82" x2="365.70" y2="403.05" stroke="#0099D9" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="広島&gt;西条" x1="366.44" y1="398.61" x2="367.46" y2="392.57" stroke="#0099D9" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="西条&gt;三原" x1="368.61" y1="388.22" x2="369.48" y2="384.97" stroke="#0099D9" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="三原&gt;福山" x1="368.44" y1="380.59" x2="367.72" y2="377.55" stroke="#0099D9" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="福山&gt;岡山" x1="367.27" y1="372.56" x2="365.70" y2="354.85" stroke="#0099D9" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="行橋&gt;中津" x1="393.19" y1="506.03" x2="397.74" y2="510.24" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="中津&gt;宇佐" x1="399.44" y1="514.22" x2="400.48" y2="516.66" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="宇佐&gt;別府" x1="402.94" y1="520.43" x2="408.70" y2="529.28" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="別府&gt;大分" x1="408.39" y1="533.26" x2="408.20" y2="535.70" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="大分&gt;佐伯" x1="410.80" y1="540.09" x2="420.01" y2="555.68" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="佐伯&gt;延岡" x1="422.96" y1="561.00" x2="433.42" y2="579.88" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="延岡&gt;日向市" x1="434.89" y1="584.13" x2="437.69" y2="592.28" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="日向市&gt;高鍋" x1="438.66" y1="596.67" x2="441.67" y2="610.18" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="高鍋&gt;宮崎" x1="440.89" y1="614.61" x2="439.69" y2="621.36" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="宮崎&gt;南宮崎" x1="437.55" y1="624.15" x2="436.24" y2="625.87" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="鳥栖&gt;久留米" x1="364.71" y1="513.71" x2="362.58" y2="515.43" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="鳥栖&gt;佐賀" x1="363.51" y1="509.19" x2="346.93" y2="503.18" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="久留米&gt;大牟田" x1="358.92" y1="517.01" x2="356.68" y2="517.98" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="大牟田&gt;玉名" x1="355.12" y1="518.67" x2="354.17" y2="519.10" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="玉名&gt;熊本" x1="354.69" y1="523.44" x2="355.01" y2="526.09" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="熊本&gt;八代" x1="354.17" y1="530.52" x2="352.57" y2="538.98" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="八代&gt;新八代" x1="351.36" y1="541.19" x2="350.61" y2="542.54" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="新八代&gt;出水" x1="350.31" y1="547.37" x2="349.25" y2="564.47" stroke="#F39800" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="出水&gt;川内" x1="349.05" y1="568.96" x2="348.50" y2="581.70" stroke="#F39800" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="川内&gt;鹿児島中央" x1="348.10" y1="586.18" x2="346.89" y2="599.85" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="佐賀&gt;肥前山口" x1="348.38" y1="506.17" x2="349.27" y2="508.00" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="佐賀&gt;武雄温泉" x1="342.43" y1="502.96" x2="336.58" y2="502.66" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="肥前山口&gt;諫早" x1="346.12" y1="512.25" x2="334.97" y2="527.33" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="諫早&gt;長崎" x1="332.59" y1="531.15" x2="328.89" y2="537.07" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="武雄温泉&gt;有田" x1="332.70" y1="500.38" x2="329.20" y2="498.33" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="有田&gt;佐世保" x1="325.25" y1="496.18" x2="319.77" y2="493.20" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
+    <circle data-e="博多&gt;小倉" data-sn="博多" cx="370.18" cy="493.59" r="1.35" fill="#fff" />
+    <circle data-e="博多&gt;鳥栖" data-sn="博多" cx="366.33" cy="497.66" r="1.35" fill="#fff" />
+    <circle data-e="小倉&gt;門司" data-sn="小倉" cx="384.64" cy="490.34" r="1.35" fill="#fff" />
+    <circle data-e="小倉&gt;行橋" data-sn="小倉" cx="386.67" cy="498.47" r="1.35" fill="#fff" />
+    <circle data-e="門司&gt;下関" data-sn="門司" cx="384.92" cy="482.24" r="1.35" fill="#fff" />
+    <circle data-e="下関&gt;新山口" data-sn="下関" cx="385.18" cy="474.10" r="1.35" fill="#fff" />
+    <circle data-e="新山口&gt;防府" data-sn="新山口" cx="384.59" cy="449.69" r="1.35" fill="#fff" />
+    <circle data-e="防府&gt;徳山" data-sn="防府" cx="380.94" cy="442.20" r="1.35" fill="#fff" />
+    <circle data-e="徳山&gt;岩国" data-sn="徳山" cx="376.64" cy="431.22" r="1.35" fill="#fff" />
+    <circle data-e="岩国&gt;宮島口" data-sn="岩国" cx="372.26" cy="416.09" r="1.35" fill="#fff" />
+    <circle data-e="宮島口&gt;広島" data-sn="宮島口" cx="367.40" cy="404.82" r="1.35" fill="#fff" />
+    <circle data-e="広島&gt;西条" data-sn="広島" cx="366.44" cy="398.61" r="1.35" fill="#fff" />
+    <circle data-e="西条&gt;三原" data-sn="西条" cx="368.61" cy="388.22" r="1.35" fill="#fff" />
+    <circle data-e="三原&gt;福山" data-sn="三原" cx="368.44" cy="380.59" r="1.35" fill="#fff" />
+    <circle data-e="福山&gt;岡山" data-sn="福山" cx="367.27" cy="372.56" r="1.35" fill="#fff" />
+    <circle data-e="行橋&gt;中津" data-sn="行橋" cx="393.19" cy="506.03" r="1.35" fill="#fff" />
+    <circle data-e="中津&gt;宇佐" data-sn="中津" cx="399.44" cy="514.22" r="1.35" fill="#fff" />
+    <circle data-e="宇佐&gt;別府" data-sn="宇佐" cx="402.94" cy="520.43" r="1.35" fill="#fff" />
+    <circle data-e="別府&gt;大分" data-sn="別府" cx="408.39" cy="533.26" r="1.35" fill="#fff" />
+    <circle data-e="大分&gt;佐伯" data-sn="大分" cx="410.80" cy="540.09" r="1.35" fill="#fff" />
+    <circle data-e="佐伯&gt;延岡" data-sn="佐伯" cx="422.96" cy="561.00" r="1.35" fill="#fff" />
+    <circle data-e="延岡&gt;日向市" data-sn="延岡" cx="434.89" cy="584.13" r="1.35" fill="#fff" />
+    <circle data-e="日向市&gt;高鍋" data-sn="日向市" cx="438.66" cy="596.67" r="1.35" fill="#fff" />
+    <circle data-e="高鍋&gt;宮崎" data-sn="高鍋" cx="440.89" cy="614.61" r="1.35" fill="#fff" />
+    <circle data-e="宮崎&gt;南宮崎" data-sn="宮崎" cx="437.55" cy="624.15" r="1.35" fill="#fff" />
+    <circle data-e="鳥栖&gt;久留米" data-sn="鳥栖" cx="364.71" cy="513.71" r="1.35" fill="#fff" />
+    <circle data-e="鳥栖&gt;佐賀" data-sn="鳥栖" cx="363.51" cy="509.19" r="1.35" fill="#fff" />
+    <circle data-e="久留米&gt;大牟田" data-sn="久留米" cx="358.92" cy="517.01" r="1.35" fill="#fff" />
+    <circle data-e="大牟田&gt;玉名" data-sn="大牟田" cx="355.12" cy="518.67" r="1.35" fill="#fff" />
+    <circle data-e="玉名&gt;熊本" data-sn="玉名" cx="354.69" cy="523.44" r="1.35" fill="#fff" />
+    <circle data-e="熊本&gt;八代" data-sn="熊本" cx="354.17" cy="530.52" r="1.35" fill="#fff" />
+    <circle data-e="八代&gt;新八代" data-sn="八代" cx="351.36" cy="541.19" r="1.35" fill="#fff" />
+    <circle data-e="新八代&gt;出水" data-sn="新八代" cx="350.31" cy="547.37" r="1.35" fill="#fff" />
+    <circle data-e="出水&gt;川内" data-sn="出水" cx="349.05" cy="568.96" r="1.35" fill="#fff" />
+    <circle data-e="川内&gt;鹿児島中央" data-sn="川内" cx="348.10" cy="586.18" r="1.35" fill="#fff" />
+    <circle data-e="佐賀&gt;肥前山口" data-sn="佐賀" cx="348.38" cy="506.17" r="1.35" fill="#fff" />
+    <circle data-e="佐賀&gt;武雄温泉" data-sn="佐賀" cx="342.43" cy="502.96" r="1.35" fill="#fff" />
+    <circle data-e="肥前山口&gt;諫早" data-sn="肥前山口" cx="346.12" cy="512.25" r="1.35" fill="#fff" />
+    <circle data-e="諫早&gt;長崎" data-sn="諫早" cx="332.59" cy="531.15" r="1.35" fill="#fff" />
+    <circle data-e="武雄温泉&gt;有田" data-sn="武雄温泉" cx="332.70" cy="500.38" r="1.35" fill="#fff" />
+    <circle data-e="有田&gt;佐世保" data-sn="有田" cx="325.25" cy="496.18" r="1.35" fill="#fff" />
+    <circle class="onl" data-onl="博多" cx="365.70" cy="493.20" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="小倉" cx="384.06" cy="494.81" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="門司" cx="385.20" cy="486.10" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="下関" cx="384.74" cy="479.87" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="新山口" cx="386.73" cy="453.65" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="徳山" cx="377.96" cy="435.52" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="岩国" cx="373.35" cy="420.46" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="広島" cx="365.70" cy="403.05" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="福山" cx="367.72" cy="377.55" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="岡山" cx="365.70" cy="354.85" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="行橋" cx="389.88" cy="502.97" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="中津" cx="397.74" cy="510.24" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="宇佐" cx="400.48" cy="516.66" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="別府" cx="408.70" cy="529.28" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="大分" cx="408.20" cy="535.70" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="佐伯" cx="420.01" cy="555.68" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="延岡" cx="433.42" cy="579.88" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="南宮崎" cx="436.24" cy="625.87" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="宮崎" cx="439.69" cy="621.36" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="鳥栖" cx="368.19" cy="510.89" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="久留米" cx="362.58" cy="515.43" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="大牟田" cx="356.68" cy="517.98" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="熊本" cx="355.01" cy="526.09" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="八代" cx="352.57" cy="538.98" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="出水" cx="349.25" cy="564.47" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="川内" cx="348.50" cy="581.70" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="鹿児島中央" cx="346.89" cy="599.85" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="佐賀" cx="346.93" cy="503.18" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="諫早" cx="334.97" cy="527.33" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="長崎" cx="328.89" cy="537.07" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="武雄温泉" cx="336.58" cy="502.66" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="佐世保" cx="319.77" cy="493.20" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="防府" cx="382.77" cy="446.31" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="宮島口" cx="370.18" cy="407.70" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="西条" cx="367.46" cy="392.57" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="三原" cx="369.48" cy="384.97" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="玉名" cx="354.17" cy="519.10" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="新八代" cx="350.61" cy="542.54" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="肥前山口" cx="349.27" cy="508.00" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="有田" cx="329.20" cy="498.33" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="日向市" cx="437.69" cy="592.28" r="1.55" fill="#fff" />
+    <circle class="onl" data-onl="高鍋" cx="441.67" cy="610.18" r="1.55" fill="#fff" />
+    <circle data-st="博多" data-sn="博多" cx="365.70" cy="493.20" r="1.85" fill="#fff" />
+    <circle data-st="小倉" data-sn="小倉" cx="384.06" cy="494.81" r="1.35" fill="#F00000" />
+    <circle data-st="門司" data-sn="門司" cx="385.20" cy="486.10" r="1.35" fill="#F00000" />
+    <circle data-st="下関" data-sn="下関" cx="384.74" cy="479.87" r="1.35" fill="#fff" />
+    <circle data-st="新山口" data-sn="新山口" cx="386.73" cy="453.65" r="1.35" fill="#0099D9" />
+    <circle data-st="徳山" data-sn="徳山" cx="377.96" cy="435.52" r="1.35" fill="#fff" />
+    <circle data-st="岩国" data-sn="岩国" cx="373.35" cy="420.46" r="1.35" fill="#fff" />
+    <circle data-st="広島" data-sn="広島" cx="365.70" cy="403.05" r="1.35" fill="#0099D9" />
+    <circle data-st="福山" data-sn="福山" cx="367.72" cy="377.55" r="1.35" fill="#fff" />
+    <circle data-st="岡山" data-sn="岡山" cx="365.70" cy="354.85" r="1.35" fill="#fff" />
+    <circle data-st="行橋" data-sn="行橋" cx="389.88" cy="502.97" r="1.35" fill="#fff" />
+    <circle data-st="中津" data-sn="中津" cx="397.74" cy="510.24" r="1.35" fill="#fff" />
+    <circle data-st="宇佐" data-sn="宇佐" cx="400.48" cy="516.66" r="1.35" fill="#fff" />
+    <circle data-st="別府" data-sn="別府" cx="408.70" cy="529.28" r="1.35" fill="#fff" />
+    <circle data-st="大分" data-sn="大分" cx="408.20" cy="535.70" r="1.35" fill="#F00000" />
+    <circle data-st="佐伯" data-sn="佐伯" cx="420.01" cy="555.68" r="1.35" fill="#fff" />
+    <circle data-st="延岡" data-sn="延岡" cx="433.42" cy="579.88" r="1.35" fill="#fff" />
+    <circle data-st="南宮崎" data-sn="南宮崎" cx="436.24" cy="625.87" r="1.35" fill="#fff" />
+    <circle data-st="宮崎" data-sn="宮崎" cx="439.69" cy="621.36" r="1.35" fill="#fff" />
+    <circle data-st="鳥栖" data-sn="鳥栖" cx="368.19" cy="510.89" r="1.35" fill="#F00000" />
+    <circle data-st="久留米" data-sn="久留米" cx="362.58" cy="515.43" r="1.35" fill="#F00000" />
+    <circle data-st="大牟田" data-sn="大牟田" cx="356.68" cy="517.98" r="1.35" fill="#fff" />
+    <circle data-st="熊本" data-sn="熊本" cx="355.01" cy="526.09" r="1.35" fill="#F00000" />
+    <circle data-st="八代" data-sn="八代" cx="352.57" cy="538.98" r="1.35" fill="#F00000" />
+    <circle data-st="出水" data-sn="出水" cx="349.25" cy="564.47" r="1.35" fill="#fff" />
+    <circle data-st="川内" data-sn="川内" cx="348.50" cy="581.70" r="1.35" fill="#F39800" />
+    <circle data-st="鹿児島中央" data-sn="鹿児島中央" cx="346.89" cy="599.85" r="1.35" fill="#F00000" />
+    <circle data-st="佐賀" data-sn="佐賀" cx="346.93" cy="503.18" r="1.35" fill="#F00000" />
+    <circle data-st="諫早" data-sn="諫早" cx="334.97" cy="527.33" r="1.35" fill="#F00000" />
+    <circle data-st="長崎" data-sn="長崎" cx="328.89" cy="537.07" r="1.35" fill="#fff" />
+    <circle data-st="武雄温泉" data-sn="武雄温泉" cx="336.58" cy="502.66" r="1.35" fill="#fff" />
+    <circle data-st="佐世保" data-sn="佐世保" cx="319.77" cy="493.20" r="1.35" fill="#fff" />
+    <circle data-st="防府" data-sn="防府" cx="382.77" cy="446.31" r="1.35" fill="#fff" />
+    <circle data-st="宮島口" data-sn="宮島口" cx="370.18" cy="407.70" r="1.35" fill="#fff" />
+    <circle data-st="西条" data-sn="西条" cx="367.46" cy="392.57" r="1.35" fill="#fff" />
+    <circle data-st="三原" data-sn="三原" cx="369.48" cy="384.97" r="1.35" fill="#fff" />
+    <circle data-st="玉名" data-sn="玉名" cx="354.17" cy="519.10" r="1.35" fill="#fff" />
+    <circle data-st="新八代" data-sn="新八代" cx="350.61" cy="542.54" r="1.35" fill="#fff" />
+    <circle data-st="肥前山口" data-sn="肥前山口" cx="349.27" cy="508.00" r="1.35" fill="#F00000" />
+    <circle data-st="有田" data-sn="有田" cx="329.20" cy="498.33" r="1.35" fill="#fff" />
+    <circle data-st="日向市" data-sn="日向市" cx="437.69" cy="592.28" r="1.35" fill="#fff" />
+    <circle data-st="高鍋" data-sn="高鍋" cx="441.67" cy="610.18" r="1.35" fill="#fff" />
+    <g data-st="南宮崎" data-sn="南宮崎" data-dx="0.00" data-dy="0.00"><text x="439.62" y="634.42" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">南宮崎</text><text x="439.62" y="634.42" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">南宮崎</text></g>
+    <g data-st="宮崎" data-sn="宮崎" data-dx="0.00" data-dy="0.00"><text x="438.10" y="632.80" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">宮崎</text><text x="438.10" y="632.80" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">宮崎</text></g>
+    <g data-st="高鍋" data-sn="高鍋" data-dx="0.00" data-dy="0.00"><text x="445.59" y="618.42" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">高鍋</text><text x="445.59" y="618.42" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">高鍋</text></g>
+    <g data-st="岡山" data-sn="岡山" data-dx="0.00" data-dy="0.00"><text x="365.70" y="349.85" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">岡山</text><text x="365.70" y="349.85" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">岡山</text></g>
+    <g data-st="日向市" data-sn="日向市" data-dx="0.00" data-dy="0.00"><text x="441.92" y="600.31" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">日向市</text><text x="441.92" y="600.31" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">日向市</text></g>
+    <g data-st="福山" data-sn="福山" data-dx="0.00" data-dy="0.00"><text x="367.84" y="372.55" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">福山</text><text x="367.84" y="372.55" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">福山</text></g>
+    <g data-st="延岡" data-sn="延岡" data-dx="0.00" data-dy="0.00"><text x="437.85" y="587.75" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">延岡</text><text x="437.85" y="587.75" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">延岡</text></g>
+    <g data-st="三原" data-sn="三原" data-dx="0.00" data-dy="0.00"><text x="375.73" y="380.18" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">三原</text><text x="375.73" y="380.18" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">三原</text></g>
+    <g data-st="鹿児島中央" data-sn="鹿児島中央" data-dx="0.00" data-dy="0.00"><text x="345.64" y="609.14" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">鹿児島中央</text><text x="345.64" y="609.14" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">鹿児島中央</text></g>
+    <g data-st="西条" data-sn="西条" data-dx="0.00" data-dy="0.00"><text x="367.58" y="387.57" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">西条</text><text x="367.58" y="387.57" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">西条</text></g>
+    <g data-st="川内" data-sn="川内" data-dx="0.00" data-dy="0.00"><text x="347.12" y="590.96" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">川内</text><text x="347.12" y="590.96" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">川内</text></g>
+    <g data-st="広島" data-sn="広島" data-dx="0.00" data-dy="0.00"><text x="365.70" y="398.05" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">広島</text><text x="365.70" y="398.05" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">広島</text></g>
+    <g data-st="宮島口" data-sn="宮島口" data-dx="0.00" data-dy="0.00"><text x="376.55" y="403.02" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">宮島口</text><text x="376.55" y="403.02" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">宮島口</text></g>
+    <g data-st="佐伯" data-sn="佐伯" data-dx="0.00" data-dy="0.00"><text x="424.73" y="563.31" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">佐伯</text><text x="424.73" y="563.31" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">佐伯</text></g>
+    <g data-st="岩国" data-sn="岩国" data-dx="0.00" data-dy="0.00"><text x="374.10" y="415.50" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">岩国</text><text x="374.10" y="415.50" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">岩国</text></g>
+    <g data-st="出水" data-sn="出水" data-dx="0.00" data-dy="0.00"><text x="347.63" y="573.68" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">出水</text><text x="347.63" y="573.68" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">出水</text></g>
+    <g data-st="大分" data-sn="大分" data-dx="0.00" data-dy="0.00"><text x="413.29" y="542.99" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">大分</text><text x="413.29" y="542.99" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">大分</text></g>
+    <g data-st="徳山" data-sn="徳山" data-dx="0.00" data-dy="0.00"><text x="379.46" y="430.68" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">徳山</text><text x="379.46" y="430.68" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">徳山</text></g>
+    <g data-st="長崎" data-sn="長崎" data-dx="0.00" data-dy="0.00"><text x="324.26" y="544.78" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">長崎</text><text x="324.26" y="544.78" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">長崎</text></g>
+    <g data-st="別府" data-sn="別府" data-dx="0.00" data-dy="0.00"><text x="410.36" y="540.71" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">別府</text><text x="410.36" y="540.71" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">別府</text></g>
+    <g data-st="新八代" data-sn="新八代" data-dx="0.00" data-dy="0.00"><text x="348.51" y="551.63" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">新八代</text><text x="348.51" y="551.63" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">新八代</text></g>
+    <g data-st="防府" data-sn="防府" data-dx="0.00" data-dy="0.00"><text x="385.23" y="441.75" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">防府</text><text x="385.23" y="441.75" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">防府</text></g>
+    <g data-st="八代" data-sn="八代" data-dx="0.00" data-dy="0.00"><text x="344.82" y="546.45" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">八代</text><text x="344.82" y="546.45" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">八代</text></g>
+    <g data-st="諫早" data-sn="諫早" data-dx="0.00" data-dy="0.00"><text x="330.15" y="534.88" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">諫早</text><text x="330.15" y="534.88" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">諫早</text></g>
+    <g data-st="佐世保" data-sn="佐世保" data-dx="0.00" data-dy="0.00"><text x="312.57" y="495.40" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">佐世保</text><text x="312.57" y="495.40" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">佐世保</text></g>
+    <g data-st="新山口" data-sn="新山口" data-dx="0.00" data-dy="0.00"><text x="390.11" y="449.49" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">新山口</text><text x="390.11" y="449.49" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">新山口</text></g>
+    <g data-st="宇佐" data-sn="宇佐" data-dx="0.00" data-dy="0.00"><text x="406.45" y="522.89" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">宇佐</text><text x="406.45" y="522.89" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">宇佐</text></g>
+    <g data-st="有田" data-sn="有田" data-dx="0.00" data-dy="0.00"><text x="322.07" y="501.53" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">有田</text><text x="322.07" y="501.53" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">有田</text></g>
+    <g data-st="中津" data-sn="中津" data-dx="0.00" data-dy="0.00"><text x="401.28" y="521.11" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">中津</text><text x="401.28" y="521.11" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">中津</text></g>
+    <g data-st="熊本" data-sn="熊本" data-dx="0.00" data-dy="0.00"><text x="352.79" y="535.14" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">熊本</text><text x="352.79" y="535.14" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">熊本</text></g>
+    <g data-st="武雄温泉" data-sn="武雄温泉" data-dx="0.00" data-dy="0.00"><text x="329.73" y="507.09" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">武雄温泉</text><text x="329.73" y="507.09" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">武雄温泉</text></g>
+    <g data-st="玉名" data-sn="玉名" data-dx="0.00" data-dy="0.00"><text x="345.76" y="525.44" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">玉名</text><text x="345.76" y="525.44" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">玉名</text></g>
+    <g data-st="大牟田" data-sn="大牟田" data-dx="0.00" data-dy="0.00"><text x="354.22" y="526.94" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">大牟田</text><text x="354.22" y="526.94" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">大牟田</text></g>
+    <g data-st="行橋" data-sn="行橋" data-dx="0.00" data-dy="0.00"><text x="396.56" y="507.87" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">行橋</text><text x="396.56" y="507.87" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">行橋</text></g>
+    <g data-st="下関" data-sn="下関" data-dx="0.00" data-dy="0.00"><text x="390.64" y="477.94" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">下関</text><text x="390.64" y="477.94" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">下関</text></g>
+    <g data-st="久留米" data-sn="久留米" data-dx="0.00" data-dy="0.00"><text x="355.63" y="523.93" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">久留米</text><text x="355.63" y="523.93" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">久留米</text></g>
+    <g data-st="肥前山口" data-sn="肥前山口" data-dx="0.00" data-dy="0.00"><text x="343.92" y="515.01" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">肥前山口</text><text x="343.92" y="515.01" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">肥前山口</text></g>
+    <g data-st="佐賀" data-sn="佐賀" data-dx="0.00" data-dy="0.00"><text x="337.75" y="503.46" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">佐賀</text><text x="337.75" y="503.46" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">佐賀</text></g>
+    <g data-st="門司" data-sn="門司" data-dx="0.00" data-dy="0.00"><text x="391.97" y="485.84" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">門司</text><text x="391.97" y="485.84" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">門司</text></g>
+    <g data-st="小倉" data-sn="小倉" data-dx="0.00" data-dy="0.00"><text x="391.23" y="497.63" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">小倉</text><text x="391.23" y="497.63" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">小倉</text></g>
+    <g data-st="鳥栖" data-sn="鳥栖" data-dx="0.00" data-dy="0.00"><text x="369.19" y="520.22" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">鳥栖</text><text x="369.19" y="520.22" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">鳥栖</text></g>
+    <g data-st="博多" data-sn="博多" data-dx="0.00" data-dy="0.00"><text x="343.70" y="495.70" fill="none" stroke="#000000" stroke-width="2.2" stroke-linejoin="round" font-size="8" font-weight="700" font-family="'Noto Sans JP', sans-serif">博多</text><text x="343.70" y="495.70" fill="#fff" font-size="8" font-weight="700" font-family="'Noto Sans JP', sans-serif">博多</text></g>
+    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 562.94)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">9</text>
+    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 561.94)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 426.86)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">9</text>
+    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 425.86)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 613.97)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">12</text>
+    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 612.97)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 375.83)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">12</text>
+    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 374.83)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(0.0 -2.0 2.0 0.0 486.37 502.60)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">12</text>
+    <text transform="matrix(0.0 -1.0 1.0 0.0 481.37 489.80)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(0.0 2.0 -2.0 0.0 245.03 483.80)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">12</text>
+    <text transform="matrix(0.0 1.0 -1.0 0.0 250.03 496.60)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 665.00)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">15</text>
+    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 664.00)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 324.80)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">15</text>
+    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 323.80)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(0.0 -2.0 2.0 0.0 537.40 502.60)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">15</text>
+    <text transform="matrix(0.0 -1.0 1.0 0.0 532.40 489.80)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(0.0 2.0 -2.0 0.0 194.00 483.80)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">15</text>
+    <text transform="matrix(0.0 1.0 -1.0 0.0 199.00 496.60)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 716.03)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">18</text>
+    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 715.03)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 273.77)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">18</text>
+    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 272.77)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(0.0 -2.0 2.0 0.0 588.43 502.60)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">18</text>
+    <text transform="matrix(0.0 -1.0 1.0 0.0 583.43 489.80)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(0.0 2.0 -2.0 0.0 142.97 483.80)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">18</text>
+    <text transform="matrix(0.0 1.0 -1.0 0.0 147.97 496.60)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 767.06)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">21</text>
+    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 766.06)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 222.74)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">21</text>
+    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 221.74)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(0.0 -2.0 2.0 0.0 639.46 502.60)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">21</text>
+    <text transform="matrix(0.0 -1.0 1.0 0.0 634.46 489.80)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(0.0 2.0 -2.0 0.0 91.94 483.80)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">21</text>
+    <text transform="matrix(0.0 1.0 -1.0 0.0 96.94 496.60)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 818.09)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">24</text>
+    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 817.09)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(0.0 -2.0 2.0 0.0 690.49 502.60)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">24</text>
+    <text transform="matrix(0.0 -1.0 1.0 0.0 685.49 489.80)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(0.0 2.0 -2.0 0.0 40.91 483.80)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">24</text>
+    <text transform="matrix(0.0 1.0 -1.0 0.0 45.91 496.60)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
+  </svg>
+
+  <header class="ver">
+    <h1>各種到着マップ<span class="ed">福岡編</span></h1>
+    <p class="en">SEISHUN 18 KIPPU ARRIVAL TIME MAP / FUKUOKA</p>
+  </header>
+
+  <div id="panel">
+    <div id="grip" aria-label="開閉"></div>
+    <div class="ph">
+      <div class="n" id="pn"></div>
+      <div class="t" id="pt"></div>
+      <button class="x" id="px" aria-label="閉じる"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6L6 18M6 6l12 12" />
+        </svg></button>
+    </div>
+    <div id="tabs"></div>
+    <div class="pb">
+      <ol id="po"></ol>
+    </div>
+  </div>
+
+  <div id="links">
+    <a href="index.html">選択</a>
+    <a href="tokyo.html">東京編</a>
+    <a href="osaka.html">大阪編</a>
+    <a href="hukuoka.html" class="cur">福岡編</a>
+  </div>
+  <div id="zoom">
+    <button id="in" aria-label="拡大">＋</button>
+    <button id="out" aria-label="縮小">－</button>
+  </div>
+
+  <div id="tip"></div>
+
+  <button id="info" aria-label="このマップについて">i</button>
+
+  <div id="about">
+    <div class="ab">
+      <button class="x" id="abx" aria-label="閉じる"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6L6 18M6 6l12 12" />
+        </svg></button>
+      <h2>各種到着マップ<span class="ed">福岡編</span></h2>
+      <p class="en2">SEISHUN 18 KIPPU ARRIVAL TIME MAP / FUKUOKA</p>
+      <p>青春18きっぷを使用して、平日に博多駅を始発で出発したときの各駅の到着時刻を等時線で表現したマップです。駅を選ぶと、その駅までの往路と、同じ所要で折り返したときの博多着（復路）も表示します。地図表現の都合上、主な路線および駅のみ掲載しています。</p>
+      <h3>使い方</h3>
+      <ul>
+        <li>駅をタップすると博多からの経路と復路の博多着を表示</li>
+        <li>ピンチ / ホイールで拡大、ドラッグで移動</li>
+        <li>左上から東京編・大阪編・福岡編を切り替え</li>
+        <li>複数の経路がある駅はタブで切り替え</li>
+      </ul>
+      <h3>使用データ</h3>
+      <ul>
+        <li>JR各社・並行在来線各社の時刻表を参考にした最速到達の目安</li>
+      </ul>
+      <p class="cau">
+        ※各駅に対して最も早く到達する列車の目安を掲載しているため、乗換待ちの時間が長くなっている箇所があります。
+        復路の博多着は、到着後すぐに往路と同じ所要時間で折り返した場合の目安です。
+        ダイヤ改正などにより実際と異なる場合がありますので、お出かけの際は各自でお調べください。
+      </p>
+    </div>
+  </div>
+
+  <div id="hint">駅をタップすると経路が見られます<br>ピンチ / ホイールで拡大、ドラッグで移動</div>
+
+  <script>
+    const ORIGIN = "博多";
+    const D = {"info":{"博多":{"arr":"","dep":"05:00","line":"起点"},"小倉":{"arr":"06:05","dep":"06:12","line":"鹿児島本線→日豊本線"},"門司":{"arr":"06:12","dep":"06:16","line":"鹿児島本線→山陽本線"},"下関":{"arr":"06:22","dep":"06:28","line":"山陽本線"},"新山口":{"arr":"07:38","dep":"07:48","line":"山陽本線→山口線"},"徳山":{"arr":"08:28","dep":"08:32","line":"山陽本線"},"岩国":{"arr":"09:18","dep":"09:22","line":"山陽本線"},"広島":{"arr":"10:18","dep":"10:28","line":"山陽本線→芸備線"},"福山":{"arr":"11:48","dep":"11:52","line":"山陽本線"},"岡山":{"arr":"13:08","dep":"","line":"山陽本線"},"行橋":{"arr":"06:32","dep":"06:32","line":"日豊本線"},"中津":{"arr":"07:08","dep":"07:08","line":"日豊本線"},"宇佐":{"arr":"07:28","dep":"07:28","line":"日豊本線"},"別府":{"arr":"08:18","dep":"08:22","line":"日豊本線"},"大分":{"arr":"08:32","dep":"08:48","line":"日豊本線→久大本線"},"佐伯":{"arr":"09:52","dep":"10:00","line":"日豊本線"},"延岡":{"arr":"11:28","dep":"11:36","line":"日豊本線"},"南宮崎":{"arr":"13:50","dep":"","line":"日豊本線"},"宮崎":{"arr":"13:42","dep":"13:48","line":"日豊本線"},"鳥栖":{"arr":"05:18","dep":"05:24","line":"鹿児島本線→長崎本線"},"久留米":{"arr":"05:28","dep":"05:34","line":"鹿児島本線→久大本線"},"大牟田":{"arr":"06:08","dep":"06:12","line":"鹿児島本線"},"熊本":{"arr":"07:02","dep":"07:12","line":"鹿児島本線→豊肥本線"},"八代":{"arr":"07:48","dep":"07:56","line":"鹿児島本線→肥薩線"},"出水":{"arr":"09:18","dep":"09:22","line":"肥薩おれんじ鉄道"},"川内":{"arr":"10:18","dep":"10:22","line":"肥薩おれんじ鉄道→鹿児島本線"},"鹿児島中央":{"arr":"11:22","dep":"11:32","line":"鹿児島本線→指宿枕崎線"},"佐賀":{"arr":"05:48","dep":"05:52","line":"長崎本線→唐津線"},"諫早":{"arr":"07:42","dep":"07:48","line":"長崎本線→大村線"},"長崎":{"arr":"08:22","dep":"","line":"長崎本線"},"武雄温泉":{"arr":"06:48","dep":"06:52","line":"佐世保線"},"佐世保":{"arr":"07:42","dep":"","line":"佐世保線"},"防府":{"arr":"07:56","dep":"08:00","line":"山陽本線"},"宮島口":{"arr":"10:02","dep":"10:06","line":"山陽本線"},"西条":{"arr":"10:55","dep":"10:58","line":"山陽本線"},"三原":{"arr":"11:22","dep":"11:26","line":"山陽本線"},"玉名":{"arr":"06:40","dep":"06:44","line":"鹿児島本線"},"新八代":{"arr":"08:02","dep":"08:06","line":"鹿児島本線"},"肥前山口":{"arr":"06:18","dep":"06:24","line":"長崎本線→佐世保線"},"有田":{"arr":"07:10","dep":"07:14","line":"佐世保線"},"日向市":{"arr":"12:12","dep":"12:16","line":"日豊本線"},"高鍋":{"arr":"13:12","dep":"13:16","line":"日豊本線"}},"parents":{"小倉":["博多"],"門司":["小倉"],"下関":["門司"],"新山口":["下関"],"防府":["新山口"],"徳山":["防府"],"岩国":["徳山"],"宮島口":["岩国"],"広島":["宮島口"],"西条":["広島"],"三原":["西条"],"福山":["三原"],"岡山":["福山"],"行橋":["小倉"],"中津":["行橋"],"宇佐":["中津"],"別府":["宇佐"],"大分":["別府"],"佐伯":["大分"],"延岡":["佐伯"],"日向市":["延岡"],"高鍋":["日向市"],"宮崎":["高鍋"],"南宮崎":["宮崎"],"鳥栖":["博多"],"久留米":["鳥栖"],"大牟田":["久留米"],"玉名":["大牟田"],"熊本":["玉名"],"八代":["熊本"],"新八代":["八代"],"出水":["新八代"],"川内":["出水"],"鹿児島中央":["川内"],"佐賀":["鳥栖"],"肥前山口":["佐賀"],"諫早":["肥前山口"],"長崎":["諫早"],"武雄温泉":["佐賀"],"有田":["武雄温泉"],"佐世保":["有田"]},"col":{"小倉":{"博多":"#F00000"},"門司":{"小倉":"#F00000"},"下関":{"門司":"#0099D9"},"新山口":{"下関":"#0099D9"},"防府":{"新山口":"#0099D9"},"徳山":{"防府":"#0099D9"},"岩国":{"徳山":"#0099D9"},"宮島口":{"岩国":"#0099D9"},"広島":{"宮島口":"#0099D9"},"西条":{"広島":"#0099D9"},"三原":{"西条":"#0099D9"},"福山":{"三原":"#0099D9"},"岡山":{"福山":"#0099D9"},"行橋":{"小倉":"#F00000"},"中津":{"行橋":"#F00000"},"宇佐":{"中津":"#F00000"},"別府":{"宇佐":"#F00000"},"大分":{"別府":"#F00000"},"佐伯":{"大分":"#F00000"},"延岡":{"佐伯":"#F00000"},"日向市":{"延岡":"#F00000"},"高鍋":{"日向市":"#F00000"},"宮崎":{"高鍋":"#F00000"},"南宮崎":{"宮崎":"#F00000"},"鳥栖":{"博多":"#F00000"},"久留米":{"鳥栖":"#F00000"},"大牟田":{"久留米":"#F00000"},"玉名":{"大牟田":"#F00000"},"熊本":{"玉名":"#F00000"},"八代":{"熊本":"#F00000"},"新八代":{"八代":"#F00000"},"出水":{"新八代":"#F39800"},"川内":{"出水":"#F39800"},"鹿児島中央":{"川内":"#F00000"},"佐賀":{"鳥栖":"#F00000"},"肥前山口":{"佐賀":"#F00000"},"諫早":{"肥前山口":"#F00000"},"長崎":{"諫早":"#F00000"},"武雄温泉":{"佐賀":"#F00000"},"有田":{"武雄温泉":"#F00000"},"佐世保":{"有田":"#F00000"}},"next":{"博多":[{"to":"小倉","dep":"05:00","line":"鹿児島本線→日豊本線"},{"to":"鳥栖","dep":"05:00","line":"鹿児島本線→長崎本線"}],"小倉":[{"to":"門司","dep":"06:12","line":"鹿児島本線→山陽本線"},{"to":"行橋","dep":"06:12","line":"日豊本線"}],"門司":[{"to":"下関","dep":"06:16","line":"山陽本線"}],"下関":[{"to":"新山口","dep":"06:28","line":"山陽本線→山口線"}],"新山口":[{"to":"防府","dep":"07:48","line":"山陽本線"}],"防府":[{"to":"徳山","dep":"08:00","line":"山陽本線"}],"徳山":[{"to":"岩国","dep":"08:32","line":"山陽本線"}],"岩国":[{"to":"宮島口","dep":"09:22","line":"山陽本線"}],"宮島口":[{"to":"広島","dep":"10:06","line":"山陽本線→芸備線"}],"広島":[{"to":"西条","dep":"10:28","line":"山陽本線"}],"西条":[{"to":"三原","dep":"10:58","line":"山陽本線"}],"三原":[{"to":"福山","dep":"11:26","line":"山陽本線"}],"福山":[{"to":"岡山","dep":"11:52","line":"山陽本線"}],"行橋":[{"to":"中津","dep":"06:32","line":"日豊本線"}],"中津":[{"to":"宇佐","dep":"07:08","line":"日豊本線"}],"宇佐":[{"to":"別府","dep":"07:28","line":"日豊本線"}],"別府":[{"to":"大分","dep":"08:22","line":"日豊本線→久大本線"}],"大分":[{"to":"佐伯","dep":"08:48","line":"日豊本線"}],"佐伯":[{"to":"延岡","dep":"10:00","line":"日豊本線"}],"延岡":[{"to":"日向市","dep":"11:36","line":"日豊本線"}],"日向市":[{"to":"高鍋","dep":"12:16","line":"日豊本線"}],"高鍋":[{"to":"宮崎","dep":"13:16","line":"日豊本線"}],"宮崎":[{"to":"南宮崎","dep":"13:48","line":"日豊本線"}],"鳥栖":[{"to":"久留米","dep":"05:24","line":"鹿児島本線→久大本線"},{"to":"佐賀","dep":"05:24","line":"長崎本線→唐津線"}],"久留米":[{"to":"大牟田","dep":"05:34","line":"鹿児島本線"}],"大牟田":[{"to":"玉名","dep":"06:12","line":"鹿児島本線"}],"玉名":[{"to":"熊本","dep":"06:44","line":"鹿児島本線→豊肥本線"}],"熊本":[{"to":"八代","dep":"07:12","line":"鹿児島本線→肥薩線"}],"八代":[{"to":"新八代","dep":"07:56","line":"鹿児島本線"}],"新八代":[{"to":"出水","dep":"08:06","line":"肥薩おれんじ鉄道"}],"出水":[{"to":"川内","dep":"09:22","line":"肥薩おれんじ鉄道→鹿児島本線"}],"川内":[{"to":"鹿児島中央","dep":"10:22","line":"鹿児島本線→指宿枕崎線"}],"佐賀":[{"to":"肥前山口","dep":"05:52","line":"長崎本線→佐世保線"},{"to":"武雄温泉","dep":"05:52","line":"佐世保線"}],"肥前山口":[{"to":"諫早","dep":"06:24","line":"長崎本線→大村線"}],"諫早":[{"to":"長崎","dep":"07:48","line":"長崎本線"}],"武雄温泉":[{"to":"有田","dep":"06:52","line":"佐世保線"}],"有田":[{"to":"佐世保","dep":"07:14","line":"佐世保線"}]}};
+    const map = document.getElementById('map');
+    const W = 595.3, H = 841.9;
+    let k = 1, tx = 0, ty = 0;
+
+    function view() { map.setAttribute('viewBox', `${-tx / k} ${-ty / k} ${innerWidth / k} ${innerHeight / k}`); }
+    const CX = 365.7, CY = 493.2;          // 東京（等時線の中心）
+    const RX = 300, RY = 300;              // 東京から内容の端までの距離
+    const sp = () => innerWidth <= 560;
+    function fitK() {
+      return sp() ? Math.min(innerWidth / 440, innerHeight / 600) * 1.28
+        : Math.min(innerWidth / (RX * 2), innerHeight / (RY * 2)) * 0.96;
+    }
+    const Z0 = 1.5;                      // 初期表示のズーム。+ ボタン1段ぶん寄せる
+    function fit() {
+      k = fitK() * Z0;
+      // スマホは西側が広いので少し右へ寄せる。ズーム後もずらす量（画面 px）は変えない
+      const fx = sp() ? CX - 72 / Z0 : CX;
+      tx = innerWidth / 2 - fx * k; ty = innerHeight / 2 - CY * k;
+      view();
+    }
+    function zoomAt(cx, cy, f) {
+      const nk = Math.min(40, Math.max(fitK() * 0.8, k * f));
+      f = nk / k; k = nk; tx = cx - (cx - tx) * f; ty = cy - (cy - ty) * f; view();
+    }
+    addEventListener('resize', view);
+
+    map.addEventListener('wheel', e => { e.preventDefault(); zoomAt(e.clientX, e.clientY, e.deltaY < 0 ? 1.15 : 1 / 1.15); hide(); }, { passive: false });
+
+    const pts = new Map(); let lastDist = null, moved = 0;
+    let hitSt = null;
+    map.addEventListener('selectstart', e => e.preventDefault());
+    map.addEventListener('dragstart', e => e.preventDefault());
+    map.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      hitSt = e.target.closest ? (e.target.closest('[data-st]') || e.target.closest('[data-sn]')) : null;
+      map.setPointerCapture(e.pointerId); pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      map.classList.add('dragging'); moved = 0; hide();
+    });
+    map.addEventListener('pointermove', e => {
+      if (!pts.has(e.pointerId)) return;
+      const prev = pts.get(e.pointerId); pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      const arr = [...pts.values()];
+      if (arr.length === 1) {
+        const dx = e.clientX - prev.x, dy = e.clientY - prev.y;
+        moved += Math.abs(dx) + Math.abs(dy);
+        tx += dx; ty += dy; view();
+      } else if (arr.length === 2) {
+        const d = Math.hypot(arr[0].x - arr[1].x, arr[0].y - arr[1].y);
+        if (lastDist) zoomAt((arr[0].x + arr[1].x) / 2, (arr[0].y + arr[1].y) / 2, d / lastDist);
+        lastDist = d; moved = 99;
+      }
+    });
+    function up(e) {
+      // 地図で始まっていないポインタは無視する。パネルのヘッダを上にドラッグして
+      // 指が地図の上で離れたとき、タップと誤認して clear() してしまうため
+      if (!pts.has(e.pointerId)) return;
+      pts.delete(e.pointerId);
+      if (pts.size < 2) lastDist = null;
+      if (pts.size === 0) {
+        map.classList.remove('dragging');
+        if (moved <= 6) {
+          const nm = hitSt && (hitSt.dataset.st || hitSt.dataset.sn);
+          if (nm) select(nm); else clear();
+        }
+        hitSt = null;
+      }
+    }
+    map.addEventListener('pointerup', up);
+    map.addEventListener('pointercancel', up);
+    map.addEventListener('dblclick', e => zoomAt(e.clientX, e.clientY, 1.9));
+
+    // ---- ホバー（駅まるごと光らせて吹き出しを出す） ----
+    const tip = document.getElementById('tip');
+    let hovName = null;
+
+    function mins(t) { const [a, b] = t.split(':').map(Number); return a * 60 + b; }
+    function lineName(v) { return (v || '').split('→')[0].replace(/[（(][^）)]*[）)]/g, '').trim(); }
+    function lineFull(v) { return (v || '').replace(/[（(][^）)]*[）)]/g, '').replace('→', ' → '); }
+
+    function parseAfter(t, prev) {
+      if (!t) return prev;
+      const [h, m] = t.split(':').map(Number);
+      let v = h * 60 + m;
+      if (prev != null) while (v < prev) v += 1440;
+      return v;
+    }
+    function fmtClock(v) {
+      if (v == null) return '';
+      const days = Math.floor(v / 1440);
+      const x = v - days * 1440;
+      const h = Math.floor(x / 60), m = x % 60;
+      const pad = n => String(n).padStart(2, '0');
+      return (days <= 0 ? '' : days === 1 ? '翌' : '翌々') + pad(h) + ':' + pad(m);
+    }
+    function outboundStart(route) {
+      const ne = (D.next[route[0]] || []).find(e => e.to === route[1]);
+      return (ne && ne.dep) || D.info[ORIGIN].dep;
+    }
+    function returnTrip(name, route) {
+      const arr = D.info[name] && D.info[name].arr;
+      if (!arr || name === ORIGIN || !route || route.length < 2) return null;
+      const segs = [];
+      let t = parseAfter(outboundStart(route), null);
+      for (let i = 0; i < route.length - 1; i++) {
+        const a = route[i], b = route[i + 1];
+        const ne = (D.next[a] || []).find(e => e.to === b);
+        const dep = (ne && ne.dep) || D.info[a].dep || D.info[a].arr;
+        const bArr = D.info[b].arr;
+        if (!dep || !bArr) continue;
+        const tDep = parseAfter(dep, t);
+        const tArr = parseAfter(bArr, tDep);
+        segs.push({ from: a, to: b, wait: tDep - t, run: tArr - tDep, line: (ne && ne.line) || D.info[b].line });
+        t = tArr;
+      }
+      if (!segs.length) return null;
+      const destArr = t;
+      let back = destArr;
+      const stops = [{ st: name, t: back, role: 'dep', line: segs[segs.length - 1].line }];
+      for (let i = segs.length - 1; i >= 0; i--) {
+        back += segs[i].run;
+        stops.push({
+          st: segs[i].from,
+          t: back,
+          role: 'arr',
+          line: i > 0 ? segs[i - 1].line : ''
+        });
+        if (i > 0) back += segs[i].wait;
+      }
+      return { destArr, originBack: back, stops, segs };
+    }
+
+    function tipHTML(n) {
+      const d = D.info[n], rows = [];
+      if (d.arr && n !== ORIGIN)
+        rows.push(`<div class="r"><span class="t">${d.arr}<i>着</i></span>` +
+          `<span class="l">${lineName(D.parents[n] && D.parents[n].length ? D.info[n].line : '')}</span></div>`);
+      (D.next[n] || []).forEach(e => {
+        if (e.dep === d.arr) return;          // 同一列車で通過する駅は発を出さない
+        rows.push(`<div class="r"><span class="t">${e.dep}<i>発</i></span>` +
+          `<span class="l">${lineName(e.line)}</span></div>`);
+      });
+      const ret = returnTrip(n, routesTo(n)[0]);
+      if (ret)
+        rows.push(`<div class="r"><span class="t">${fmtClock(ret.originBack)}<i>戻</i></span>` +
+          `<span class="l">博多着（復路）</span></div>`);
+      return `<div class="nm">${n}</div><div class="tms">${rows.join('')}</div>`;
+    }
+    function placeTip(x, y) {
+      const r = tip.getBoundingClientRect();
+      let lx = x + 16, ly = y - r.height / 2;
+      if (lx + r.width > innerWidth - 8) lx = x - r.width - 16;
+      ly = Math.max(8, Math.min(innerHeight - r.height - 8, ly));
+      tip.style.left = lx + 'px'; tip.style.top = ly + 'px';
+    }
+    function setHover(n, x, y) {
+      if (n !== hovName) {
+        map.querySelectorAll('.hov').forEach(el => el.classList.remove('hov'));
+        hovName = n;
+        if (n) {
+          map.querySelectorAll(`[data-sn="${CSS.escape(n)}"]`).forEach(el => el.classList.add('hov'));
+          tip.innerHTML = tipHTML(n); tip.classList.add('on');
+        } else tip.classList.remove('on');
+      }
+      if (n) placeTip(x, y);
+    }
+    // タッチ端末では mousemove がタップで合成され、mouseleave が来ないので
+    // 吹き出しが出たまま地図を覆う。ホバーできる端末だけに限定する
+    // （スマホは下のパネルに同じ情報が出るので吹き出しは不要）
+    if (matchMedia('(hover:hover) and (pointer:fine)').matches) {
+      map.addEventListener('mousemove', e => {
+        const t = e.target.closest && e.target.closest('[data-sn]');
+        setHover(t ? t.dataset.sn : null, e.clientX, e.clientY);
+      });
+      map.addEventListener('mouseleave', () => setHover(null));
+    }
+
+    // ---- 駅の選択 ----
+    const panel = document.getElementById('panel');
+    function routesTo(n) {
+      const out = [];
+      (function walk(cur, acc) {
+        if (out.length >= 4) return;
+        const ps = D.parents[cur];
+        if (!ps || !ps.length) { out.push([cur, ...acc]); return; }
+        ps.forEach(p => walk(p, [cur, ...acc]));
+      })(n, []);
+      return out;
+    }
+
+    // Safari は CSS の filter を SVG 要素に無視するので、図形のグローは SVG の
+    // filter 属性で付ける。フィルタ領域は経路の外接矩形に毎回合わせる（全画面だと重い）
+    const IS_WK = document.documentElement.classList.contains('is-safari');
+    const GLOWABLE = { g: 1, path: 1, line: 1, polyline: 1, polygon: 1, circle: 1, ellipse: 1, rect: 1 };
+    const glowDefs = [document.getElementById('glow'), document.getElementById('glowPick')];
+    // フィルタは要素ごとにかけない。経路が長いと「領域 × 要素数」ぶんのラスタライズで
+    // メモリを食い潰し、Safari がタブごと落ちる（新山口で 137 要素 × 283x283）。
+    // 経路をまとめて 1 つの g に移し、フィルタは 1 回だけかける。
+    let glowLayer = null, movedBack = [];
+    function setRegion(f, x0, y0, x1, y1, pad) {
+      f.setAttribute('x', (x0 - pad).toFixed(1));
+      f.setAttribute('y', (y0 - pad).toFixed(1));
+      f.setAttribute('width', (x1 - x0 + pad * 2).toFixed(1));
+      f.setAttribute('height', (y1 - y0 + pad * 2).toFixed(1));
+    }
+    function bboxOf(els) {
+      let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+      els.forEach(el => {
+        const b = el.getBBox();
+        x0 = Math.min(x0, b.x); y0 = Math.min(y0, b.y);
+        x1 = Math.max(x1, b.x + b.width); y1 = Math.max(y1, b.y + b.height);
+      });
+      return [x0, y0, x1, y1];
+    }
+    function dropGlow() {
+      // 動かした要素を元の位置へ戻す（描画順を保つため後ろから）
+      for (let i = movedBack.length - 1; i >= 0; i--) {
+        const [el, parent, next] = movedBack[i]; parent.insertBefore(el, next);
+      }
+      movedBack = [];
+      if (glowLayer) { glowLayer.forEach(g => g.remove()); glowLayer = null; }
+      map.querySelectorAll('[filter]').forEach(el => el.removeAttribute('filter'));
+    }
+    function applyGlow() {
+      if (!IS_WK) return;
+      dropGlow();
+      const all = [...map.querySelectorAll('.on')].filter(el => GLOWABLE[el.tagName]);
+      if (!all.length) return;
+      const pick = all.filter(el => el.classList.contains('pick'));
+      const rest = all.filter(el => !el.classList.contains('pick'));
+
+      // 経路と選択駅をそれぞれ 1 つの g にまとめ、フィルタは g に 1 回だけかける。
+      // 選択駅を後に置くことで、白丸が経路の線の下に潜らないようにする
+      glowLayer = [];
+      [[rest, glowDefs[0], 'url(#glow)'], [pick, glowDefs[1], 'url(#glowPick)']].forEach(([els, def, f]) => {
+        if (!els.length) return;
+        setRegion(def, ...bboxOf(els), 20);
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.setAttribute('filter', f);
+        map.appendChild(g);
+        els.forEach(el => { movedBack.push([el, el.parentNode, el.nextSibling]); g.appendChild(el); });
+        glowLayer.push(g);
+      });
+    }
+
+    let curName = null, curRoutes = [], curIdx = 0;
+    function select(name, idx) {
+      if (name === ORIGIN) { clear(); return; }
+      if (name !== curName) { curRoutes = routesTo(name); curIdx = 0; curName = name; }
+      if (idx !== undefined) curIdx = idx;
+      const route = curRoutes[curIdx], set = new Set();
+      for (let i = 0; i < route.length - 1; i++) set.add(route[i] + '>' + route[i + 1]);
+      map.classList.add('sel');
+      const rs = new Set(route);
+      map.querySelectorAll('[data-e]').forEach(el => el.classList.toggle('on', set.has(el.dataset.e)));
+      map.querySelectorAll('[data-onl]').forEach(el => {
+        const hit = rs.has(el.dataset.onl);
+        el.classList.toggle('on', hit);
+        el.classList.toggle('pick', el.dataset.onl === name);
+      });
+      map.querySelectorAll('[data-sn]:not([data-e])').forEach(el => {
+        const hit = rs.has(el.dataset.sn);
+        el.classList.toggle('on', hit);
+        el.classList.toggle('pick', el.dataset.sn === name);
+      });
+      applyGlow();
+
+      const i = D.info[name];
+      document.getElementById('pn').textContent = name;
+      const ret = returnTrip(name, route);
+      document.getElementById('pt').innerHTML = ret
+        ? `${i.arr} 着<br><span class="back">${fmtClock(ret.originBack)} 博多着</span>`
+        : ((name === ORIGIN) ? `${i.arr} 発` : `${i.arr} 着`);
+      const ol = document.getElementById('po'); ol.innerHTML = '';
+      route.forEach((s, idx) => {
+        const d = D.info[s];
+        const cIn = idx > 0 ? ((D.col[s] || {})[route[idx - 1]] || '#3a424c') : '#3a424c';
+        const cOut = idx < route.length - 1 ? ((D.col[route[idx + 1]] || {})[s] || '#3a424c') : '#3a424c';
+        const li = document.createElement('li');
+        const isLast0 = idx === route.length - 1;
+        // その経路で実際に乗る列車の発車時刻（駅の代表値ではなく区間ごとに引く）
+        const ne = isLast0 ? null : (D.next[s] || []).find(e => e.to === route[idx + 1]);
+        const depT = ne ? ne.dep : '';
+        const showDep = !!depT && depT !== d.arr;
+        const thru = idx > 0 && !isLast0 && !showDep;
+        li.className = 'st' + (idx === 0 ? ' first' : '') + (isLast0 ? ' last' : '') + (s === name ? ' pk' : '') + (thru ? ' thru' : '');
+        li.style.setProperty('--cin', cIn);
+        li.style.setProperty('--cout', cOut);
+        const tm = idx === 0
+          ? ((depT || d.dep || d.arr) ? (depT || d.dep || d.arr) + ' 発' : '')
+          : (showDep ? `${d.arr ? d.arr + ' 着' : ''}<b>${depT} 発</b>` : (d.arr ? d.arr + ' 着' : ''));
+        li.innerHTML = `<div class="tm">${tm}</div><div class="rail"><i class="dot"></i></div><div class="nm">${s}</div>`;
+        ol.appendChild(li);
+
+        if (idx < route.length - 1) {
+          const nx = route[idx + 1], sg = document.createElement('li');
+          sg.className = 'sg'; sg.style.setProperty('--c', cOut);
+          sg.innerHTML = `<div></div><div class="rail"></div>` +
+            `<div class="ln">${lineName(D.info[nx].line)}</div>`;
+          ol.appendChild(sg);
+        }
+      });
+      if (ret) {
+        const hd = document.createElement('li');
+        hd.className = 'hd';
+        hd.innerHTML = '<div class="nm">復路　同所要で折り返した目安</div>';
+        ol.appendChild(hd);
+        ret.stops.forEach((stop, j) => {
+          const s = stop.st;
+          const prevSt = j > 0 ? ret.stops[j - 1].st : null;
+          const nextSt = j < ret.stops.length - 1 ? ret.stops[j + 1].st : null;
+          const cIn = prevSt
+            ? ((D.col[s] || {})[prevSt] || (D.col[prevSt] || {})[s] || '#3a424c')
+            : '#3a424c';
+          const cOut = nextSt
+            ? ((D.col[nextSt] || {})[s] || (D.col[s] || {})[nextSt] || '#3a424c')
+            : '#3a424c';
+          const li = document.createElement('li');
+          const isLast = j === ret.stops.length - 1;
+          li.className = 'st' + (j === 0 ? ' first' : '') + (isLast ? ' last pk' : '');
+          li.style.setProperty('--cin', cIn);
+          li.style.setProperty('--cout', cOut);
+          const tm = j === 0 ? fmtClock(stop.t) + ' 発' : fmtClock(stop.t) + ' 着';
+          li.innerHTML = `<div class="tm">${tm}</div><div class="rail"><i class="dot"></i></div><div class="nm">${s}</div>`;
+          ol.appendChild(li);
+          if (!isLast) {
+            const sg = document.createElement('li');
+            sg.className = 'sg'; sg.style.setProperty('--c', cOut);
+            sg.innerHTML = `<div></div><div class="rail"></div>` +
+              `<div class="ln">${lineName(stop.line || '')}</div>`;
+            ol.appendChild(sg);
+          }
+        });
+      }
+      const tabs = document.getElementById('tabs');
+      if (curRoutes.length > 1) {
+        tabs.className = 'on'; tabs.innerHTML = '';
+        curRoutes.forEach((r, i) => {
+          const b = document.createElement('button');
+          b.textContent = '経路' + (i + 1);
+          if (i === curIdx) b.className = 'sel';
+          b.onclick = () => select(name, i);
+          tabs.appendChild(b);
+        });
+      } else tabs.className = '';
+      panel.classList.remove('min', 'max');
+      panel.classList.add('open');
+      document.querySelector('.pb').scrollTop = 0;   // 前の経路のスクロール位置を持ち越さない
+    }
+    function clear() {
+      curName = null; curRoutes = []; curIdx = 0;
+      document.getElementById('tabs').className = '';
+      panel.classList.remove('open', 'min', 'max'); map.classList.remove('sel');
+      map.querySelectorAll('.on,.pick').forEach(el => el.classList.remove('on', 'pick'));
+      dropGlow();
+    }
+
+    document.getElementById('px').onclick = e => { e.stopPropagation(); clear(); };
+    const grip = document.getElementById('grip');
+    function setState(st) {
+      panel.classList.toggle('min', st === 'min');
+      panel.classList.toggle('max', st === 'max');
+    }
+    function state() {
+      return panel.classList.contains('min') ? 'min'
+        : panel.classList.contains('max') ? 'max' : 'mid';
+    }
+    function toggleMin() { setState(state() === 'min' ? 'mid' : 'min'); }
+
+    // グリップは細いので、ヘッダを掴んでも同じようにドラッグできるようにする。
+    // ヘッダのタップは toggleMin（click 側）に任せ、ドラッグのときは打ち消す
+    const ph = document.querySelector('.ph');
+    const ORDER = ['max', 'mid', 'min'];
+    let gy = null, gst = null, gdrag = false;
+    function dragStart(e) {
+      if (e.target.closest('#px')) return;
+      e.currentTarget.setPointerCapture(e.pointerId);   // 指が外へ出ても pointerup を受け取る
+      gy = e.clientY; gst = state(); gdrag = false;
+    }
+    function dragEnd(e) {
+      if (gy === null) return;
+      const dy = e.clientY - gy;
+      let i = ORDER.indexOf(gst);
+      if (dy < -30) { i = Math.max(0, i - 1); gdrag = true; }        // 上へ = 広げる
+      else if (dy > 30) { i = Math.min(2, i + 1); gdrag = true; }    // 下へ = たたむ
+      else if (e.currentTarget === grip) i = (gst === 'min') ? 1 : (gst === 'mid' ? 0 : 1);  // グリップのタップ
+      else { gy = null; return; }                            // ヘッダのタップは click に任せる
+      setState(ORDER[i]); gy = null;
+    }
+    grip.addEventListener('pointerdown', dragStart);
+    grip.addEventListener('pointerup', dragEnd);
+    ph.addEventListener('pointerdown', dragStart);
+    ph.addEventListener('pointerup', dragEnd);
+    ph.onclick = e => {
+      if (gdrag) { gdrag = false; return; }                    // ドラッグ直後のクリックは無視
+      if (innerWidth <= 560 && !e.target.closest('#px')) toggleMin();
+    };
+    document.getElementById('info').onclick = () => document.getElementById('about').classList.add('open');
+    document.getElementById('abx').onclick = () => document.getElementById('about').classList.remove('open');
+    document.getElementById('about').onclick = e => {
+      if (e.target.id === 'about') e.currentTarget.classList.remove('open');
+    };
+    addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        const ab = document.getElementById('about');
+        if (ab.classList.contains('open')) ab.classList.remove('open'); else clear();
+      }
+    });
+
+    document.getElementById('in').onclick = () => { zoomAt(innerWidth / 2, innerHeight / 2, 1.5); hide() };
+    document.getElementById('out').onclick = () => { zoomAt(innerWidth / 2, innerHeight / 2, 1 / 1.5); hide() };
+
+    let hidden = false;
+    function hide() {
+      if (hidden) return; hidden = true;
+      const h = document.getElementById('hint'); h.classList.add('gone'); setTimeout(() => h.remove(), 600);
+    }
+    setTimeout(hide, 5000);
+    fit();
+  </script>
+</body>
+
+</html>
