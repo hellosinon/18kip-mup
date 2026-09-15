@@ -1,13 +1,19 @@
-"""Build tokyo.html and osaka.html from the official site."""
+"""Build tokyo.html, osaka.html, and hukuoka.html."""
+from __future__ import annotations
+
 import json
 import re
 import ssl
+import sys
 import urllib.request
 from pathlib import Path
+
+from build_hukuoka import build_hukuoka
 
 ROOT = Path(__file__).resolve().parent
 TOKYO_URL = "https://maps.chizutodesign.com/18kippu/"
 OSAKA_URL = "https://maps.chizutodesign.com/18kippu/osaka/"
+HUKUOKA_URL = "https://maps.chizutodesign.com/18kippu/hukuoka/"
 
 EDITIONS = {
     "tokyo": {
@@ -30,6 +36,16 @@ EDITIONS = {
                        'stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>東京編</a></div>\n'),
         "remove_link": None,
     },
+    "hukuoka": {
+        "url": HUKUOKA_URL,
+        "local_ref": ROOT / "hukuoka.html",
+        "out": ROOT / "hukuoka.html",
+        "other_link": ('<div id="links"><a href="tokyo.html">'
+                       '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" '
+                       'stroke="currentColor" stroke-width="3" stroke-linecap="round" '
+                       'stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>東京編</a></div>\n'),
+        "remove_link": None,
+    }
 }
 
 LINK_PATTERNS = [
@@ -90,8 +106,19 @@ def build_edition(name: str, cfg: dict, use_cache: bool = False) -> None:
 
 
 def main() -> None:
+    raw = [a.lower() for a in sys.argv[1:]]
+    fetch = "--fetch" in raw
+    args = [a for a in raw if not a.startswith("-")]
+    want = set(args) if args else {"tokyo", "osaka", "hukuoka"}
+    unknown = want - {"tokyo", "osaka", "hukuoka"}
+    if unknown:
+        raise SystemExit(f"unknown edition: {', '.join(sorted(unknown))}")
     for name, cfg in EDITIONS.items():
-        build_edition(name, cfg)
+        if name in want:
+            build_edition(
+                name, cfg, use_cache=not fetch and cfg["out"].exists())
+    if "hukuoka" in want:
+        build_hukuoka()
 
 
 if __name__ == "__main__":

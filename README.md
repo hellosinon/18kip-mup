@@ -40,7 +40,8 @@ http://localhost:8000/index.html
 ├── hukuoka.html           # 福岡（博多）始発版
 ├── reference_tokyo.html   # 公式サイト取得元（東京）
 ├── reference_osaka.html   # 公式サイト取得元（大阪）
-├── build.py               # 東京.html / 大阪.html 生成スクリプト
+├── build.py               # 東京 / 大阪 / 福岡の生成
+├── build_hukuoka.py       # 福岡編の地図生成（build.py から呼ばれる）
 ├── extract_data.py        # 公式サイトから reference_*.html を取得
 ├── data/
 │   ├── 東京/
@@ -58,11 +59,14 @@ http://localhost:8000/index.html
 ## データの更新
 
 ```powershell
-# 公式サイトから最新HTMLを取得
-python extract_data.py
+# 公式サイトから最新HTMLを取得して再生成
+python build.py --fetch
 
-# 東京.html / 大阪.html を再生成
+# 手元の HTML / データから東京・大阪・福岡を再生成
 python build.py
+
+# 福岡編だけ再生成
+python build.py hukuoka
 ```
 
 - **時刻表データ**: `data/東京/timetable.json` または `data/大阪/timetable.json` を編集

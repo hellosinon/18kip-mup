@@ -398,6 +398,7 @@
     #links a:hover {
       background: #444
     }
+
     #links a.cur {
       border-color: #f2c14e;
       color: #f2c14e
@@ -972,7 +973,7 @@
 </head>
 
 <body>
-<svg id="map" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 595.3 841.9">
+  <svg id="map" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 595.3 841.9">
     <defs>
       <filter id="glow" filterUnits="userSpaceOnUse" x="0" y="0" width="595.3" height="841.9"
         color-interpolation-filters="sRGB">
@@ -1027,88 +1028,170 @@
     <circle cx="365.7" cy="493.2" r="289.17" fill="none" stroke="#595757" stroke-width="0.5" stroke-dasharray="2,1.5" />
     <circle cx="365.7" cy="493.2" r="306.18" fill="none" stroke="#595757" stroke-width="0.75" />
     <circle cx="365.7" cy="493.2" r="323.19" fill="none" stroke="#595757" stroke-width="0.5" stroke-dasharray="2,1.5" />
-    <line data-e="博多&gt;小倉" data-sn="博多" x1="365.70" y1="493.20" x2="370.18" y2="493.59" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="博多&gt;鳥栖" data-sn="博多" x1="365.70" y1="493.20" x2="366.33" y2="497.66" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="小倉&gt;門司" data-sn="小倉" x1="384.06" y1="494.81" x2="384.64" y2="490.34" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="小倉&gt;行橋" data-sn="小倉" x1="384.06" y1="494.81" x2="386.67" y2="498.47" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="門司&gt;下関" data-sn="門司" x1="385.20" y1="486.10" x2="384.92" y2="482.24" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="下関&gt;新山口" data-sn="下関" x1="384.74" y1="479.87" x2="385.18" y2="474.10" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="新山口&gt;防府" data-sn="新山口" x1="386.73" y1="453.65" x2="384.59" y2="449.69" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="防府&gt;徳山" data-sn="防府" x1="382.77" y1="446.31" x2="380.94" y2="442.20" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="徳山&gt;岩国" data-sn="徳山" x1="377.96" y1="435.52" x2="376.64" y2="431.22" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="岩国&gt;宮島口" data-sn="岩国" x1="373.35" y1="420.46" x2="372.26" y2="416.09" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="宮島口&gt;広島" data-sn="宮島口" x1="370.18" y1="407.70" x2="367.40" y2="404.82" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="広島&gt;西条" data-sn="広島" x1="365.70" y1="403.05" x2="366.44" y2="398.61" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="西条&gt;三原" data-sn="西条" x1="367.46" y1="392.57" x2="368.61" y2="388.22" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="三原&gt;福山" data-sn="三原" x1="369.48" y1="384.97" x2="368.44" y2="380.59" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="福山&gt;岡山" data-sn="福山" x1="367.72" y1="377.55" x2="367.27" y2="372.56" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="行橋&gt;中津" data-sn="行橋" x1="389.88" y1="502.97" x2="393.19" y2="506.03" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="中津&gt;宇佐" data-sn="中津" x1="397.74" y1="510.24" x2="399.44" y2="514.22" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="宇佐&gt;別府" data-sn="宇佐" x1="400.48" y1="516.66" x2="402.94" y2="520.43" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="別府&gt;大分" data-sn="別府" x1="408.70" y1="529.28" x2="408.39" y2="533.26" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="大分&gt;佐伯" data-sn="大分" x1="408.20" y1="535.70" x2="410.80" y2="540.09" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="佐伯&gt;延岡" data-sn="佐伯" x1="420.01" y1="555.68" x2="422.96" y2="561.00" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="延岡&gt;日向市" data-sn="延岡" x1="433.42" y1="579.88" x2="434.89" y2="584.13" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="日向市&gt;高鍋" data-sn="日向市" x1="437.69" y1="592.28" x2="438.66" y2="596.67" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="高鍋&gt;宮崎" data-sn="高鍋" x1="441.67" y1="610.18" x2="440.89" y2="614.61" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="宮崎&gt;南宮崎" data-sn="宮崎" x1="439.69" y1="621.36" x2="437.55" y2="624.15" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="鳥栖&gt;久留米" data-sn="鳥栖" x1="368.19" y1="510.89" x2="364.71" y2="513.71" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="鳥栖&gt;佐賀" data-sn="鳥栖" x1="368.19" y1="510.89" x2="363.51" y2="509.19" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="久留米&gt;大牟田" data-sn="久留米" x1="362.58" y1="515.43" x2="358.92" y2="517.01" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="大牟田&gt;玉名" data-sn="大牟田" x1="356.68" y1="517.98" x2="355.12" y2="518.67" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="玉名&gt;熊本" data-sn="玉名" x1="354.17" y1="519.10" x2="354.69" y2="523.44" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="熊本&gt;八代" data-sn="熊本" x1="355.01" y1="526.09" x2="354.17" y2="530.52" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="八代&gt;新八代" data-sn="八代" x1="352.57" y1="538.98" x2="351.36" y2="541.19" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="新八代&gt;出水" data-sn="新八代" x1="350.61" y1="542.54" x2="350.31" y2="547.37" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="出水&gt;川内" data-sn="出水" x1="349.25" y1="564.47" x2="349.05" y2="568.96" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="川内&gt;鹿児島中央" data-sn="川内" x1="348.50" y1="581.70" x2="348.10" y2="586.18" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="佐賀&gt;肥前山口" data-sn="佐賀" x1="346.93" y1="503.18" x2="348.38" y2="506.17" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="佐賀&gt;武雄温泉" data-sn="佐賀" x1="346.93" y1="503.18" x2="342.43" y2="502.96" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="肥前山口&gt;諫早" data-sn="肥前山口" x1="349.27" y1="508.00" x2="346.12" y2="512.25" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="諫早&gt;長崎" data-sn="諫早" x1="334.97" y1="527.33" x2="332.59" y2="531.15" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="武雄温泉&gt;有田" data-sn="武雄温泉" x1="336.58" y1="502.66" x2="332.70" y2="500.38" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="有田&gt;佐世保" data-sn="有田" x1="329.20" y1="498.33" x2="325.25" y2="496.18" stroke="#B5B5B6" stroke-width="2.9" stroke-linecap="round" />
-    <line data-e="博多&gt;小倉" x1="370.18" y1="493.59" x2="384.06" y2="494.81" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="博多&gt;鳥栖" x1="366.33" y1="497.66" x2="368.19" y2="510.89" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="小倉&gt;門司" x1="384.64" y1="490.34" x2="385.20" y2="486.10" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="小倉&gt;行橋" x1="386.67" y1="498.47" x2="389.88" y2="502.97" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="門司&gt;下関" x1="384.92" y1="482.24" x2="384.74" y2="479.87" stroke="#0099D9" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="下関&gt;新山口" x1="385.18" y1="474.10" x2="386.73" y2="453.65" stroke="#0099D9" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="新山口&gt;防府" x1="384.59" y1="449.69" x2="382.77" y2="446.31" stroke="#0099D9" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="防府&gt;徳山" x1="380.94" y1="442.20" x2="377.96" y2="435.52" stroke="#0099D9" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="徳山&gt;岩国" x1="376.64" y1="431.22" x2="373.35" y2="420.46" stroke="#0099D9" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="岩国&gt;宮島口" x1="372.26" y1="416.09" x2="370.18" y2="407.70" stroke="#0099D9" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="宮島口&gt;広島" x1="367.40" y1="404.82" x2="365.70" y2="403.05" stroke="#0099D9" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="広島&gt;西条" x1="366.44" y1="398.61" x2="367.46" y2="392.57" stroke="#0099D9" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="西条&gt;三原" x1="368.61" y1="388.22" x2="369.48" y2="384.97" stroke="#0099D9" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="三原&gt;福山" x1="368.44" y1="380.59" x2="367.72" y2="377.55" stroke="#0099D9" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="福山&gt;岡山" x1="367.27" y1="372.56" x2="365.70" y2="354.85" stroke="#0099D9" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="行橋&gt;中津" x1="393.19" y1="506.03" x2="397.74" y2="510.24" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="中津&gt;宇佐" x1="399.44" y1="514.22" x2="400.48" y2="516.66" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="宇佐&gt;別府" x1="402.94" y1="520.43" x2="408.70" y2="529.28" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="別府&gt;大分" x1="408.39" y1="533.26" x2="408.20" y2="535.70" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="大分&gt;佐伯" x1="410.80" y1="540.09" x2="420.01" y2="555.68" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="佐伯&gt;延岡" x1="422.96" y1="561.00" x2="433.42" y2="579.88" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="延岡&gt;日向市" x1="434.89" y1="584.13" x2="437.69" y2="592.28" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="日向市&gt;高鍋" x1="438.66" y1="596.67" x2="441.67" y2="610.18" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="高鍋&gt;宮崎" x1="440.89" y1="614.61" x2="439.69" y2="621.36" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="宮崎&gt;南宮崎" x1="437.55" y1="624.15" x2="436.24" y2="625.87" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="鳥栖&gt;久留米" x1="364.71" y1="513.71" x2="362.58" y2="515.43" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="鳥栖&gt;佐賀" x1="363.51" y1="509.19" x2="346.93" y2="503.18" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="久留米&gt;大牟田" x1="358.92" y1="517.01" x2="356.68" y2="517.98" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="大牟田&gt;玉名" x1="355.12" y1="518.67" x2="354.17" y2="519.10" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="玉名&gt;熊本" x1="354.69" y1="523.44" x2="355.01" y2="526.09" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="熊本&gt;八代" x1="354.17" y1="530.52" x2="352.57" y2="538.98" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="八代&gt;新八代" x1="351.36" y1="541.19" x2="350.61" y2="542.54" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="新八代&gt;出水" x1="350.31" y1="547.37" x2="349.25" y2="564.47" stroke="#F39800" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="出水&gt;川内" x1="349.05" y1="568.96" x2="348.50" y2="581.70" stroke="#F39800" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="川内&gt;鹿児島中央" x1="348.10" y1="586.18" x2="346.89" y2="599.85" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="佐賀&gt;肥前山口" x1="348.38" y1="506.17" x2="349.27" y2="508.00" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="佐賀&gt;武雄温泉" x1="342.43" y1="502.96" x2="336.58" y2="502.66" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="肥前山口&gt;諫早" x1="346.12" y1="512.25" x2="334.97" y2="527.33" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="諫早&gt;長崎" x1="332.59" y1="531.15" x2="328.89" y2="537.07" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="武雄温泉&gt;有田" x1="332.70" y1="500.38" x2="329.20" y2="498.33" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
-    <line data-e="有田&gt;佐世保" x1="325.25" y1="496.18" x2="319.77" y2="493.20" stroke="#F00000" stroke-width="0.75" stroke-linecap="round" />
+    <line data-e="博多&gt;小倉" data-sn="博多" x1="365.70" y1="493.20" x2="370.18" y2="493.59" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="博多&gt;鳥栖" data-sn="博多" x1="365.70" y1="493.20" x2="366.33" y2="497.66" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="小倉&gt;門司" data-sn="小倉" x1="384.06" y1="494.81" x2="384.64" y2="490.34" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="小倉&gt;行橋" data-sn="小倉" x1="384.06" y1="494.81" x2="386.67" y2="498.47" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="門司&gt;下関" data-sn="門司" x1="385.20" y1="486.10" x2="384.92" y2="482.24" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="下関&gt;新山口" data-sn="下関" x1="384.74" y1="479.87" x2="385.18" y2="474.10" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="新山口&gt;防府" data-sn="新山口" x1="386.73" y1="453.65" x2="384.59" y2="449.69" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="防府&gt;徳山" data-sn="防府" x1="382.77" y1="446.31" x2="380.94" y2="442.20" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="徳山&gt;岩国" data-sn="徳山" x1="377.96" y1="435.52" x2="376.64" y2="431.22" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="岩国&gt;宮島口" data-sn="岩国" x1="373.35" y1="420.46" x2="372.26" y2="416.09" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="宮島口&gt;広島" data-sn="宮島口" x1="370.18" y1="407.70" x2="367.40" y2="404.82" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="広島&gt;西条" data-sn="広島" x1="365.70" y1="403.05" x2="366.44" y2="398.61" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="西条&gt;三原" data-sn="西条" x1="367.46" y1="392.57" x2="368.61" y2="388.22" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="三原&gt;福山" data-sn="三原" x1="369.48" y1="384.97" x2="368.44" y2="380.59" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="福山&gt;岡山" data-sn="福山" x1="367.72" y1="377.55" x2="367.27" y2="372.56" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="行橋&gt;中津" data-sn="行橋" x1="389.88" y1="502.97" x2="393.19" y2="506.03" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="中津&gt;宇佐" data-sn="中津" x1="397.74" y1="510.24" x2="399.44" y2="514.22" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="宇佐&gt;別府" data-sn="宇佐" x1="400.48" y1="516.66" x2="402.94" y2="520.43" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="別府&gt;大分" data-sn="別府" x1="408.70" y1="529.28" x2="408.39" y2="533.26" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="大分&gt;佐伯" data-sn="大分" x1="408.20" y1="535.70" x2="410.80" y2="540.09" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="佐伯&gt;延岡" data-sn="佐伯" x1="420.01" y1="555.68" x2="422.96" y2="561.00" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="延岡&gt;日向市" data-sn="延岡" x1="433.42" y1="579.88" x2="434.89" y2="584.13" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="日向市&gt;高鍋" data-sn="日向市" x1="437.69" y1="592.28" x2="438.66" y2="596.67" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="高鍋&gt;宮崎" data-sn="高鍋" x1="441.67" y1="610.18" x2="440.89" y2="614.61" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="宮崎&gt;南宮崎" data-sn="宮崎" x1="439.69" y1="621.36" x2="437.55" y2="624.15" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="鳥栖&gt;久留米" data-sn="鳥栖" x1="368.19" y1="510.89" x2="364.71" y2="513.71" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="鳥栖&gt;佐賀" data-sn="鳥栖" x1="368.19" y1="510.89" x2="363.51" y2="509.19" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="久留米&gt;大牟田" data-sn="久留米" x1="362.58" y1="515.43" x2="358.92" y2="517.01" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="大牟田&gt;玉名" data-sn="大牟田" x1="356.68" y1="517.98" x2="355.12" y2="518.67" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="玉名&gt;熊本" data-sn="玉名" x1="354.17" y1="519.10" x2="354.69" y2="523.44" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="熊本&gt;八代" data-sn="熊本" x1="355.01" y1="526.09" x2="354.17" y2="530.52" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="八代&gt;新八代" data-sn="八代" x1="352.57" y1="538.98" x2="351.36" y2="541.19" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="新八代&gt;出水" data-sn="新八代" x1="350.61" y1="542.54" x2="350.31" y2="547.37" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="出水&gt;川内" data-sn="出水" x1="349.25" y1="564.47" x2="349.05" y2="568.96" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="川内&gt;鹿児島中央" data-sn="川内" x1="348.50" y1="581.70" x2="348.10" y2="586.18" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="佐賀&gt;肥前山口" data-sn="佐賀" x1="346.93" y1="503.18" x2="348.38" y2="506.17" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="佐賀&gt;武雄温泉" data-sn="佐賀" x1="346.93" y1="503.18" x2="342.43" y2="502.96" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="肥前山口&gt;諫早" data-sn="肥前山口" x1="349.27" y1="508.00" x2="346.12" y2="512.25" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="諫早&gt;長崎" data-sn="諫早" x1="334.97" y1="527.33" x2="332.59" y2="531.15" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="武雄温泉&gt;有田" data-sn="武雄温泉" x1="336.58" y1="502.66" x2="332.70" y2="500.38" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="有田&gt;佐世保" data-sn="有田" x1="329.20" y1="498.33" x2="325.25" y2="496.18" stroke="#B5B5B6"
+      stroke-width="2.9" stroke-linecap="round" />
+    <line data-e="博多&gt;小倉" x1="370.18" y1="493.59" x2="384.06" y2="494.81" stroke="#F00000" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="博多&gt;鳥栖" x1="366.33" y1="497.66" x2="368.19" y2="510.89" stroke="#F00000" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="小倉&gt;門司" x1="384.64" y1="490.34" x2="385.20" y2="486.10" stroke="#F00000" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="小倉&gt;行橋" x1="386.67" y1="498.47" x2="389.88" y2="502.97" stroke="#F00000" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="門司&gt;下関" x1="384.92" y1="482.24" x2="384.74" y2="479.87" stroke="#0099D9" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="下関&gt;新山口" x1="385.18" y1="474.10" x2="386.73" y2="453.65" stroke="#0099D9" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="新山口&gt;防府" x1="384.59" y1="449.69" x2="382.77" y2="446.31" stroke="#0099D9" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="防府&gt;徳山" x1="380.94" y1="442.20" x2="377.96" y2="435.52" stroke="#0099D9" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="徳山&gt;岩国" x1="376.64" y1="431.22" x2="373.35" y2="420.46" stroke="#0099D9" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="岩国&gt;宮島口" x1="372.26" y1="416.09" x2="370.18" y2="407.70" stroke="#0099D9" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="宮島口&gt;広島" x1="367.40" y1="404.82" x2="365.70" y2="403.05" stroke="#0099D9" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="広島&gt;西条" x1="366.44" y1="398.61" x2="367.46" y2="392.57" stroke="#0099D9" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="西条&gt;三原" x1="368.61" y1="388.22" x2="369.48" y2="384.97" stroke="#0099D9" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="三原&gt;福山" x1="368.44" y1="380.59" x2="367.72" y2="377.55" stroke="#0099D9" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="福山&gt;岡山" x1="367.27" y1="372.56" x2="365.70" y2="354.85" stroke="#0099D9" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="行橋&gt;中津" x1="393.19" y1="506.03" x2="397.74" y2="510.24" stroke="#F00000" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="中津&gt;宇佐" x1="399.44" y1="514.22" x2="400.48" y2="516.66" stroke="#F00000" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="宇佐&gt;別府" x1="402.94" y1="520.43" x2="408.70" y2="529.28" stroke="#F00000" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="別府&gt;大分" x1="408.39" y1="533.26" x2="408.20" y2="535.70" stroke="#F00000" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="大分&gt;佐伯" x1="410.80" y1="540.09" x2="420.01" y2="555.68" stroke="#F00000" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="佐伯&gt;延岡" x1="422.96" y1="561.00" x2="433.42" y2="579.88" stroke="#F00000" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="延岡&gt;日向市" x1="434.89" y1="584.13" x2="437.69" y2="592.28" stroke="#F00000" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="日向市&gt;高鍋" x1="438.66" y1="596.67" x2="441.67" y2="610.18" stroke="#F00000" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="高鍋&gt;宮崎" x1="440.89" y1="614.61" x2="439.69" y2="621.36" stroke="#F00000" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="宮崎&gt;南宮崎" x1="437.55" y1="624.15" x2="436.24" y2="625.87" stroke="#F00000" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="鳥栖&gt;久留米" x1="364.71" y1="513.71" x2="362.58" y2="515.43" stroke="#F00000" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="鳥栖&gt;佐賀" x1="363.51" y1="509.19" x2="346.93" y2="503.18" stroke="#F00000" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="久留米&gt;大牟田" x1="358.92" y1="517.01" x2="356.68" y2="517.98" stroke="#F00000" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="大牟田&gt;玉名" x1="355.12" y1="518.67" x2="354.17" y2="519.10" stroke="#F00000" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="玉名&gt;熊本" x1="354.69" y1="523.44" x2="355.01" y2="526.09" stroke="#F00000" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="熊本&gt;八代" x1="354.17" y1="530.52" x2="352.57" y2="538.98" stroke="#F00000" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="八代&gt;新八代" x1="351.36" y1="541.19" x2="350.61" y2="542.54" stroke="#F00000" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="新八代&gt;出水" x1="350.31" y1="547.37" x2="349.25" y2="564.47" stroke="#F39800" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="出水&gt;川内" x1="349.05" y1="568.96" x2="348.50" y2="581.70" stroke="#F39800" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="川内&gt;鹿児島中央" x1="348.10" y1="586.18" x2="346.89" y2="599.85" stroke="#F00000" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="佐賀&gt;肥前山口" x1="348.38" y1="506.17" x2="349.27" y2="508.00" stroke="#F00000" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="佐賀&gt;武雄温泉" x1="342.43" y1="502.96" x2="336.58" y2="502.66" stroke="#F00000" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="肥前山口&gt;諫早" x1="346.12" y1="512.25" x2="334.97" y2="527.33" stroke="#F00000" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="諫早&gt;長崎" x1="332.59" y1="531.15" x2="328.89" y2="537.07" stroke="#F00000" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="武雄温泉&gt;有田" x1="332.70" y1="500.38" x2="329.20" y2="498.33" stroke="#F00000" stroke-width="0.75"
+      stroke-linecap="round" />
+    <line data-e="有田&gt;佐世保" x1="325.25" y1="496.18" x2="319.77" y2="493.20" stroke="#F00000" stroke-width="0.75"
+      stroke-linecap="round" />
     <circle data-e="博多&gt;小倉" data-sn="博多" cx="370.18" cy="493.59" r="1.35" fill="#fff" />
     <circle data-e="博多&gt;鳥栖" data-sn="博多" cx="366.33" cy="497.66" r="1.35" fill="#fff" />
     <circle data-e="小倉&gt;門司" data-sn="小倉" cx="384.64" cy="490.34" r="1.35" fill="#fff" />
@@ -1234,90 +1317,258 @@
     <circle data-st="有田" data-sn="有田" cx="329.20" cy="498.33" r="1.35" fill="#fff" />
     <circle data-st="日向市" data-sn="日向市" cx="437.69" cy="592.28" r="1.35" fill="#fff" />
     <circle data-st="高鍋" data-sn="高鍋" cx="441.67" cy="610.18" r="1.35" fill="#fff" />
-    <g data-st="南宮崎" data-sn="南宮崎" data-dx="0.00" data-dy="0.00"><text x="439.62" y="634.42" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">南宮崎</text><text x="439.62" y="634.42" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">南宮崎</text></g>
-    <g data-st="宮崎" data-sn="宮崎" data-dx="0.00" data-dy="0.00"><text x="438.10" y="632.80" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">宮崎</text><text x="438.10" y="632.80" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">宮崎</text></g>
-    <g data-st="高鍋" data-sn="高鍋" data-dx="0.00" data-dy="0.00"><text x="445.59" y="618.42" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">高鍋</text><text x="445.59" y="618.42" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">高鍋</text></g>
-    <g data-st="岡山" data-sn="岡山" data-dx="0.00" data-dy="0.00"><text x="365.70" y="349.85" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">岡山</text><text x="365.70" y="349.85" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">岡山</text></g>
-    <g data-st="日向市" data-sn="日向市" data-dx="0.00" data-dy="0.00"><text x="441.92" y="600.31" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">日向市</text><text x="441.92" y="600.31" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">日向市</text></g>
-    <g data-st="福山" data-sn="福山" data-dx="0.00" data-dy="0.00"><text x="367.84" y="372.55" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">福山</text><text x="367.84" y="372.55" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">福山</text></g>
-    <g data-st="延岡" data-sn="延岡" data-dx="0.00" data-dy="0.00"><text x="437.85" y="587.75" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">延岡</text><text x="437.85" y="587.75" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">延岡</text></g>
-    <g data-st="三原" data-sn="三原" data-dx="0.00" data-dy="0.00"><text x="375.73" y="380.18" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">三原</text><text x="375.73" y="380.18" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">三原</text></g>
-    <g data-st="鹿児島中央" data-sn="鹿児島中央" data-dx="0.00" data-dy="0.00"><text x="345.64" y="609.14" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">鹿児島中央</text><text x="345.64" y="609.14" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">鹿児島中央</text></g>
-    <g data-st="西条" data-sn="西条" data-dx="0.00" data-dy="0.00"><text x="367.58" y="387.57" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">西条</text><text x="367.58" y="387.57" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">西条</text></g>
-    <g data-st="川内" data-sn="川内" data-dx="0.00" data-dy="0.00"><text x="347.12" y="590.96" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">川内</text><text x="347.12" y="590.96" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">川内</text></g>
-    <g data-st="広島" data-sn="広島" data-dx="0.00" data-dy="0.00"><text x="365.70" y="398.05" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">広島</text><text x="365.70" y="398.05" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">広島</text></g>
-    <g data-st="宮島口" data-sn="宮島口" data-dx="0.00" data-dy="0.00"><text x="376.55" y="403.02" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">宮島口</text><text x="376.55" y="403.02" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">宮島口</text></g>
-    <g data-st="佐伯" data-sn="佐伯" data-dx="0.00" data-dy="0.00"><text x="424.73" y="563.31" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">佐伯</text><text x="424.73" y="563.31" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">佐伯</text></g>
-    <g data-st="岩国" data-sn="岩国" data-dx="0.00" data-dy="0.00"><text x="374.10" y="415.50" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">岩国</text><text x="374.10" y="415.50" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">岩国</text></g>
-    <g data-st="出水" data-sn="出水" data-dx="0.00" data-dy="0.00"><text x="347.63" y="573.68" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">出水</text><text x="347.63" y="573.68" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">出水</text></g>
-    <g data-st="大分" data-sn="大分" data-dx="0.00" data-dy="0.00"><text x="413.29" y="542.99" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">大分</text><text x="413.29" y="542.99" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">大分</text></g>
-    <g data-st="徳山" data-sn="徳山" data-dx="0.00" data-dy="0.00"><text x="379.46" y="430.68" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">徳山</text><text x="379.46" y="430.68" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">徳山</text></g>
-    <g data-st="長崎" data-sn="長崎" data-dx="0.00" data-dy="0.00"><text x="324.26" y="544.78" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">長崎</text><text x="324.26" y="544.78" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">長崎</text></g>
-    <g data-st="別府" data-sn="別府" data-dx="0.00" data-dy="0.00"><text x="410.36" y="540.71" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">別府</text><text x="410.36" y="540.71" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">別府</text></g>
-    <g data-st="新八代" data-sn="新八代" data-dx="0.00" data-dy="0.00"><text x="348.51" y="551.63" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">新八代</text><text x="348.51" y="551.63" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">新八代</text></g>
-    <g data-st="防府" data-sn="防府" data-dx="0.00" data-dy="0.00"><text x="385.23" y="441.75" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">防府</text><text x="385.23" y="441.75" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">防府</text></g>
-    <g data-st="八代" data-sn="八代" data-dx="0.00" data-dy="0.00"><text x="344.82" y="546.45" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">八代</text><text x="344.82" y="546.45" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">八代</text></g>
-    <g data-st="諫早" data-sn="諫早" data-dx="0.00" data-dy="0.00"><text x="330.15" y="534.88" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">諫早</text><text x="330.15" y="534.88" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">諫早</text></g>
-    <g data-st="佐世保" data-sn="佐世保" data-dx="0.00" data-dy="0.00"><text x="312.57" y="495.40" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">佐世保</text><text x="312.57" y="495.40" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">佐世保</text></g>
-    <g data-st="新山口" data-sn="新山口" data-dx="0.00" data-dy="0.00"><text x="390.11" y="449.49" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">新山口</text><text x="390.11" y="449.49" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">新山口</text></g>
-    <g data-st="宇佐" data-sn="宇佐" data-dx="0.00" data-dy="0.00"><text x="406.45" y="522.89" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">宇佐</text><text x="406.45" y="522.89" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">宇佐</text></g>
-    <g data-st="有田" data-sn="有田" data-dx="0.00" data-dy="0.00"><text x="322.07" y="501.53" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">有田</text><text x="322.07" y="501.53" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">有田</text></g>
-    <g data-st="中津" data-sn="中津" data-dx="0.00" data-dy="0.00"><text x="401.28" y="521.11" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">中津</text><text x="401.28" y="521.11" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">中津</text></g>
-    <g data-st="熊本" data-sn="熊本" data-dx="0.00" data-dy="0.00"><text x="352.79" y="535.14" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">熊本</text><text x="352.79" y="535.14" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">熊本</text></g>
-    <g data-st="武雄温泉" data-sn="武雄温泉" data-dx="0.00" data-dy="0.00"><text x="329.73" y="507.09" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">武雄温泉</text><text x="329.73" y="507.09" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">武雄温泉</text></g>
-    <g data-st="玉名" data-sn="玉名" data-dx="0.00" data-dy="0.00"><text x="345.76" y="525.44" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">玉名</text><text x="345.76" y="525.44" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">玉名</text></g>
-    <g data-st="大牟田" data-sn="大牟田" data-dx="0.00" data-dy="0.00"><text x="354.22" y="526.94" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">大牟田</text><text x="354.22" y="526.94" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">大牟田</text></g>
-    <g data-st="行橋" data-sn="行橋" data-dx="0.00" data-dy="0.00"><text x="396.56" y="507.87" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">行橋</text><text x="396.56" y="507.87" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">行橋</text></g>
-    <g data-st="下関" data-sn="下関" data-dx="0.00" data-dy="0.00"><text x="390.64" y="477.94" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">下関</text><text x="390.64" y="477.94" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">下関</text></g>
-    <g data-st="久留米" data-sn="久留米" data-dx="0.00" data-dy="0.00"><text x="355.63" y="523.93" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">久留米</text><text x="355.63" y="523.93" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">久留米</text></g>
-    <g data-st="肥前山口" data-sn="肥前山口" data-dx="0.00" data-dy="0.00"><text x="343.92" y="515.01" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">肥前山口</text><text x="343.92" y="515.01" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">肥前山口</text></g>
-    <g data-st="佐賀" data-sn="佐賀" data-dx="0.00" data-dy="0.00"><text x="337.75" y="503.46" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">佐賀</text><text x="337.75" y="503.46" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">佐賀</text></g>
-    <g data-st="門司" data-sn="門司" data-dx="0.00" data-dy="0.00"><text x="391.97" y="485.84" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">門司</text><text x="391.97" y="485.84" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">門司</text></g>
-    <g data-st="小倉" data-sn="小倉" data-dx="0.00" data-dy="0.00"><text x="391.23" y="497.63" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">小倉</text><text x="391.23" y="497.63" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">小倉</text></g>
-    <g data-st="鳥栖" data-sn="鳥栖" data-dx="0.00" data-dy="0.00"><text x="369.19" y="520.22" fill="none" stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">鳥栖</text><text x="369.19" y="520.22" fill="#fff" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">鳥栖</text></g>
-    <g data-st="博多" data-sn="博多" data-dx="0.00" data-dy="0.00"><text x="343.70" y="495.70" fill="none" stroke="#000000" stroke-width="2.2" stroke-linejoin="round" font-size="8" font-weight="700" font-family="'Noto Sans JP', sans-serif">博多</text><text x="343.70" y="495.70" fill="#fff" font-size="8" font-weight="700" font-family="'Noto Sans JP', sans-serif">博多</text></g>
-    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 562.94)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">9</text>
-    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 561.94)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
-    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 426.86)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">9</text>
-    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 425.86)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
-    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 613.97)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">12</text>
-    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 612.97)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
-    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 375.83)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">12</text>
-    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 374.83)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
-    <text transform="matrix(0.0 -2.0 2.0 0.0 486.37 502.60)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">12</text>
-    <text transform="matrix(0.0 -1.0 1.0 0.0 481.37 489.80)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
-    <text transform="matrix(0.0 2.0 -2.0 0.0 245.03 483.80)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">12</text>
-    <text transform="matrix(0.0 1.0 -1.0 0.0 250.03 496.60)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
-    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 665.00)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">15</text>
-    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 664.00)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
-    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 324.80)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">15</text>
-    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 323.80)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
-    <text transform="matrix(0.0 -2.0 2.0 0.0 537.40 502.60)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">15</text>
-    <text transform="matrix(0.0 -1.0 1.0 0.0 532.40 489.80)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
-    <text transform="matrix(0.0 2.0 -2.0 0.0 194.00 483.80)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">15</text>
-    <text transform="matrix(0.0 1.0 -1.0 0.0 199.00 496.60)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
-    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 716.03)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">18</text>
-    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 715.03)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
-    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 273.77)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">18</text>
-    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 272.77)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
-    <text transform="matrix(0.0 -2.0 2.0 0.0 588.43 502.60)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">18</text>
-    <text transform="matrix(0.0 -1.0 1.0 0.0 583.43 489.80)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
-    <text transform="matrix(0.0 2.0 -2.0 0.0 142.97 483.80)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">18</text>
-    <text transform="matrix(0.0 1.0 -1.0 0.0 147.97 496.60)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
-    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 767.06)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">21</text>
-    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 766.06)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
-    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 222.74)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">21</text>
-    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 221.74)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
-    <text transform="matrix(0.0 -2.0 2.0 0.0 639.46 502.60)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">21</text>
-    <text transform="matrix(0.0 -1.0 1.0 0.0 634.46 489.80)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
-    <text transform="matrix(0.0 2.0 -2.0 0.0 91.94 483.80)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">21</text>
-    <text transform="matrix(0.0 1.0 -1.0 0.0 96.94 496.60)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
-    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 818.09)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">24</text>
-    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 817.09)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
-    <text transform="matrix(0.0 -2.0 2.0 0.0 690.49 502.60)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">24</text>
-    <text transform="matrix(0.0 -1.0 1.0 0.0 685.49 489.80)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
-    <text transform="matrix(0.0 2.0 -2.0 0.0 40.91 483.80)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Barlow', sans-serif">24</text>
-    <text transform="matrix(0.0 1.0 -1.0 0.0 45.91 496.60)" fill="#6e6e6e" font-size="6" font-weight="500" font-family="'Noto Sans JP', sans-serif">時</text>
+    <g data-st="南宮崎" data-sn="南宮崎" data-dx="0.00" data-dy="0.00"><text x="439.62" y="634.42" fill="none"
+        stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">南宮崎</text><text x="439.62" y="634.42" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">南宮崎</text></g>
+    <g data-st="宮崎" data-sn="宮崎" data-dx="0.00" data-dy="0.00"><text x="438.10" y="632.80" fill="none" stroke="#000000"
+        stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">宮崎</text><text x="438.10" y="632.80" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">宮崎</text></g>
+    <g data-st="高鍋" data-sn="高鍋" data-dx="0.00" data-dy="0.00"><text x="445.59" y="618.42" fill="none" stroke="#000000"
+        stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">高鍋</text><text x="445.59" y="618.42" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">高鍋</text></g>
+    <g data-st="岡山" data-sn="岡山" data-dx="0.00" data-dy="0.00"><text x="365.70" y="349.85" fill="none" stroke="#000000"
+        stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">岡山</text><text x="365.70" y="349.85" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">岡山</text></g>
+    <g data-st="日向市" data-sn="日向市" data-dx="0.00" data-dy="0.00"><text x="441.92" y="600.31" fill="none"
+        stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">日向市</text><text x="441.92" y="600.31" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">日向市</text></g>
+    <g data-st="福山" data-sn="福山" data-dx="0.00" data-dy="0.00"><text x="367.84" y="372.55" fill="none" stroke="#000000"
+        stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">福山</text><text x="367.84" y="372.55" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">福山</text></g>
+    <g data-st="延岡" data-sn="延岡" data-dx="0.00" data-dy="0.00"><text x="437.85" y="587.75" fill="none" stroke="#000000"
+        stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">延岡</text><text x="437.85" y="587.75" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">延岡</text></g>
+    <g data-st="三原" data-sn="三原" data-dx="0.00" data-dy="0.00"><text x="375.73" y="380.18" fill="none" stroke="#000000"
+        stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">三原</text><text x="375.73" y="380.18" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">三原</text></g>
+    <g data-st="鹿児島中央" data-sn="鹿児島中央" data-dx="0.00" data-dy="0.00"><text x="345.64" y="609.14" fill="none"
+        stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">鹿児島中央</text><text x="345.64" y="609.14" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">鹿児島中央</text></g>
+    <g data-st="西条" data-sn="西条" data-dx="0.00" data-dy="0.00"><text x="367.58" y="387.57" fill="none" stroke="#000000"
+        stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">西条</text><text x="367.58" y="387.57" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">西条</text></g>
+    <g data-st="川内" data-sn="川内" data-dx="0.00" data-dy="0.00"><text x="347.12" y="590.96" fill="none" stroke="#000000"
+        stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">川内</text><text x="347.12" y="590.96" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">川内</text></g>
+    <g data-st="広島" data-sn="広島" data-dx="0.00" data-dy="0.00"><text x="365.70" y="398.05" fill="none" stroke="#000000"
+        stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">広島</text><text x="365.70" y="398.05" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">広島</text></g>
+    <g data-st="宮島口" data-sn="宮島口" data-dx="0.00" data-dy="0.00"><text x="376.55" y="403.02" fill="none"
+        stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">宮島口</text><text x="376.55" y="403.02" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">宮島口</text></g>
+    <g data-st="佐伯" data-sn="佐伯" data-dx="0.00" data-dy="0.00"><text x="424.73" y="563.31" fill="none" stroke="#000000"
+        stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">佐伯</text><text x="424.73" y="563.31" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">佐伯</text></g>
+    <g data-st="岩国" data-sn="岩国" data-dx="0.00" data-dy="0.00"><text x="374.10" y="415.50" fill="none" stroke="#000000"
+        stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">岩国</text><text x="374.10" y="415.50" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">岩国</text></g>
+    <g data-st="出水" data-sn="出水" data-dx="0.00" data-dy="0.00"><text x="347.63" y="573.68" fill="none" stroke="#000000"
+        stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">出水</text><text x="347.63" y="573.68" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">出水</text></g>
+    <g data-st="大分" data-sn="大分" data-dx="0.00" data-dy="0.00"><text x="413.29" y="542.99" fill="none" stroke="#000000"
+        stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">大分</text><text x="413.29" y="542.99" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">大分</text></g>
+    <g data-st="徳山" data-sn="徳山" data-dx="0.00" data-dy="0.00"><text x="379.46" y="430.68" fill="none" stroke="#000000"
+        stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">徳山</text><text x="379.46" y="430.68" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">徳山</text></g>
+    <g data-st="長崎" data-sn="長崎" data-dx="0.00" data-dy="0.00"><text x="324.26" y="544.78" fill="none" stroke="#000000"
+        stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">長崎</text><text x="324.26" y="544.78" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">長崎</text></g>
+    <g data-st="別府" data-sn="別府" data-dx="0.00" data-dy="0.00"><text x="410.36" y="540.71" fill="none" stroke="#000000"
+        stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">別府</text><text x="410.36" y="540.71" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">別府</text></g>
+    <g data-st="新八代" data-sn="新八代" data-dx="0.00" data-dy="0.00"><text x="348.51" y="551.63" fill="none"
+        stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">新八代</text><text x="348.51" y="551.63" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">新八代</text></g>
+    <g data-st="防府" data-sn="防府" data-dx="0.00" data-dy="0.00"><text x="385.23" y="441.75" fill="none" stroke="#000000"
+        stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">防府</text><text x="385.23" y="441.75" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">防府</text></g>
+    <g data-st="八代" data-sn="八代" data-dx="0.00" data-dy="0.00"><text x="344.82" y="546.45" fill="none" stroke="#000000"
+        stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">八代</text><text x="344.82" y="546.45" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">八代</text></g>
+    <g data-st="諫早" data-sn="諫早" data-dx="0.00" data-dy="0.00"><text x="330.15" y="534.88" fill="none" stroke="#000000"
+        stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">諫早</text><text x="330.15" y="534.88" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">諫早</text></g>
+    <g data-st="佐世保" data-sn="佐世保" data-dx="0.00" data-dy="0.00"><text x="312.57" y="495.40" fill="none"
+        stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">佐世保</text><text x="312.57" y="495.40" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">佐世保</text></g>
+    <g data-st="新山口" data-sn="新山口" data-dx="0.00" data-dy="0.00"><text x="390.11" y="449.49" fill="none"
+        stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">新山口</text><text x="390.11" y="449.49" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">新山口</text></g>
+    <g data-st="宇佐" data-sn="宇佐" data-dx="0.00" data-dy="0.00"><text x="406.45" y="522.89" fill="none" stroke="#000000"
+        stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">宇佐</text><text x="406.45" y="522.89" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">宇佐</text></g>
+    <g data-st="有田" data-sn="有田" data-dx="0.00" data-dy="0.00"><text x="322.07" y="501.53" fill="none" stroke="#000000"
+        stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">有田</text><text x="322.07" y="501.53" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">有田</text></g>
+    <g data-st="中津" data-sn="中津" data-dx="0.00" data-dy="0.00"><text x="401.28" y="521.11" fill="none" stroke="#000000"
+        stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">中津</text><text x="401.28" y="521.11" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">中津</text></g>
+    <g data-st="熊本" data-sn="熊本" data-dx="0.00" data-dy="0.00"><text x="352.79" y="535.14" fill="none" stroke="#000000"
+        stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">熊本</text><text x="352.79" y="535.14" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">熊本</text></g>
+    <g data-st="武雄温泉" data-sn="武雄温泉" data-dx="0.00" data-dy="0.00"><text x="329.73" y="507.09" fill="none"
+        stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">武雄温泉</text><text x="329.73" y="507.09" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">武雄温泉</text></g>
+    <g data-st="玉名" data-sn="玉名" data-dx="0.00" data-dy="0.00"><text x="345.76" y="525.44" fill="none" stroke="#000000"
+        stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">玉名</text><text x="345.76" y="525.44" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">玉名</text></g>
+    <g data-st="大牟田" data-sn="大牟田" data-dx="0.00" data-dy="0.00"><text x="354.22" y="526.94" fill="none"
+        stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">大牟田</text><text x="354.22" y="526.94" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">大牟田</text></g>
+    <g data-st="行橋" data-sn="行橋" data-dx="0.00" data-dy="0.00"><text x="396.56" y="507.87" fill="none" stroke="#000000"
+        stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">行橋</text><text x="396.56" y="507.87" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">行橋</text></g>
+    <g data-st="下関" data-sn="下関" data-dx="0.00" data-dy="0.00"><text x="390.64" y="477.94" fill="none" stroke="#000000"
+        stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">下関</text><text x="390.64" y="477.94" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">下関</text></g>
+    <g data-st="久留米" data-sn="久留米" data-dx="0.00" data-dy="0.00"><text x="355.63" y="523.93" fill="none"
+        stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">久留米</text><text x="355.63" y="523.93" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">久留米</text></g>
+    <g data-st="肥前山口" data-sn="肥前山口" data-dx="0.00" data-dy="0.00"><text x="343.92" y="515.01" fill="none"
+        stroke="#000000" stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">肥前山口</text><text x="343.92" y="515.01" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">肥前山口</text></g>
+    <g data-st="佐賀" data-sn="佐賀" data-dx="0.00" data-dy="0.00"><text x="337.75" y="503.46" fill="none" stroke="#000000"
+        stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">佐賀</text><text x="337.75" y="503.46" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">佐賀</text></g>
+    <g data-st="門司" data-sn="門司" data-dx="0.00" data-dy="0.00"><text x="391.97" y="485.84" fill="none" stroke="#000000"
+        stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">門司</text><text x="391.97" y="485.84" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">門司</text></g>
+    <g data-st="小倉" data-sn="小倉" data-dx="0.00" data-dy="0.00"><text x="391.23" y="497.63" fill="none" stroke="#000000"
+        stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">小倉</text><text x="391.23" y="497.63" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">小倉</text></g>
+    <g data-st="鳥栖" data-sn="鳥栖" data-dx="0.00" data-dy="0.00"><text x="369.19" y="520.22" fill="none" stroke="#000000"
+        stroke-width="1.6" stroke-linejoin="round" font-size="6" font-weight="500"
+        font-family="'Noto Sans JP', sans-serif">鳥栖</text><text x="369.19" y="520.22" fill="#fff" font-size="6"
+        font-weight="500" font-family="'Noto Sans JP', sans-serif">鳥栖</text></g>
+    <g data-st="博多" data-sn="博多" data-dx="0.00" data-dy="0.00"><text x="343.70" y="495.70" fill="none" stroke="#000000"
+        stroke-width="2.2" stroke-linejoin="round" font-size="8" font-weight="700"
+        font-family="'Noto Sans JP', sans-serif">博多</text><text x="343.70" y="495.70" fill="#fff" font-size="8"
+        font-weight="700" font-family="'Noto Sans JP', sans-serif">博多</text></g>
+    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 562.94)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Barlow', sans-serif">9</text>
+    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 561.94)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 426.86)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Barlow', sans-serif">9</text>
+    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 425.86)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 613.97)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Barlow', sans-serif">12</text>
+    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 612.97)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 375.83)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Barlow', sans-serif">12</text>
+    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 374.83)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(0.0 -2.0 2.0 0.0 486.37 502.60)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Barlow', sans-serif">12</text>
+    <text transform="matrix(0.0 -1.0 1.0 0.0 481.37 489.80)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(0.0 2.0 -2.0 0.0 245.03 483.80)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Barlow', sans-serif">12</text>
+    <text transform="matrix(0.0 1.0 -1.0 0.0 250.03 496.60)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 665.00)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Barlow', sans-serif">15</text>
+    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 664.00)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 324.80)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Barlow', sans-serif">15</text>
+    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 323.80)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(0.0 -2.0 2.0 0.0 537.40 502.60)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Barlow', sans-serif">15</text>
+    <text transform="matrix(0.0 -1.0 1.0 0.0 532.40 489.80)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(0.0 2.0 -2.0 0.0 194.00 483.80)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Barlow', sans-serif">15</text>
+    <text transform="matrix(0.0 1.0 -1.0 0.0 199.00 496.60)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 716.03)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Barlow', sans-serif">18</text>
+    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 715.03)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 273.77)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Barlow', sans-serif">18</text>
+    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 272.77)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(0.0 -2.0 2.0 0.0 588.43 502.60)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Barlow', sans-serif">18</text>
+    <text transform="matrix(0.0 -1.0 1.0 0.0 583.43 489.80)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(0.0 2.0 -2.0 0.0 142.97 483.80)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Barlow', sans-serif">18</text>
+    <text transform="matrix(0.0 1.0 -1.0 0.0 147.97 496.60)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 767.06)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Barlow', sans-serif">21</text>
+    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 766.06)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 222.74)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Barlow', sans-serif">21</text>
+    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 221.74)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(0.0 -2.0 2.0 0.0 639.46 502.60)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Barlow', sans-serif">21</text>
+    <text transform="matrix(0.0 -1.0 1.0 0.0 634.46 489.80)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(0.0 2.0 -2.0 0.0 91.94 483.80)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Barlow', sans-serif">21</text>
+    <text transform="matrix(0.0 1.0 -1.0 0.0 96.94 496.60)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(2.0 0.0 0.0 2.0 356.30 818.09)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Barlow', sans-serif">24</text>
+    <text transform="matrix(1.0 0.0 0.0 1.0 369.10 817.09)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(0.0 -2.0 2.0 0.0 690.49 502.60)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Barlow', sans-serif">24</text>
+    <text transform="matrix(0.0 -1.0 1.0 0.0 685.49 489.80)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Noto Sans JP', sans-serif">時</text>
+    <text transform="matrix(0.0 2.0 -2.0 0.0 40.91 483.80)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Barlow', sans-serif">24</text>
+    <text transform="matrix(0.0 1.0 -1.0 0.0 45.91 496.60)" fill="#6e6e6e" font-size="6" font-weight="500"
+      font-family="'Noto Sans JP', sans-serif">時</text>
   </svg>
 
   <header class="ver">
@@ -1342,7 +1593,6 @@
   </div>
 
   <div id="links">
-    <a href="index.html">選択</a>
     <a href="tokyo.html">東京編</a>
     <a href="osaka.html">大阪編</a>
     <a href="hukuoka.html" class="cur">福岡編</a>
@@ -1364,7 +1614,9 @@
         </svg></button>
       <h2>各種到着マップ<span class="ed">福岡編</span></h2>
       <p class="en2">SEISHUN 18 KIPPU ARRIVAL TIME MAP / FUKUOKA</p>
-      <p>青春18きっぷを使用して、平日に博多駅を始発で出発したときの各駅の到着時刻を等時線で表現したマップです。駅を選ぶと、その駅までの往路と、同じ所要で折り返したときの博多着（復路）も表示します。地図表現の都合上、主な路線および駅のみ掲載しています。</p>
+      <p>
+        青春18きっぷを使用して、平日に博多駅を始発で出発したときの各駅の到着時刻を等時線で表現したマップです。駅を選ぶと、その駅までの往路と、同じ所要で折り返したときの博多着（復路）も表示します。地図表現の都合上、主な路線および駅のみ掲載しています。
+      </p>
       <h3>使い方</h3>
       <ul>
         <li>駅をタップすると博多からの経路と復路の博多着を表示</li>
@@ -1388,7 +1640,7 @@
 
   <script>
     const ORIGIN = "博多";
-    const D = {"info":{"博多":{"arr":"","dep":"05:00","line":"起点"},"小倉":{"arr":"06:05","dep":"06:12","line":"鹿児島本線→日豊本線"},"門司":{"arr":"06:12","dep":"06:16","line":"鹿児島本線→山陽本線"},"下関":{"arr":"06:22","dep":"06:28","line":"山陽本線"},"新山口":{"arr":"07:38","dep":"07:48","line":"山陽本線→山口線"},"徳山":{"arr":"08:28","dep":"08:32","line":"山陽本線"},"岩国":{"arr":"09:18","dep":"09:22","line":"山陽本線"},"広島":{"arr":"10:18","dep":"10:28","line":"山陽本線→芸備線"},"福山":{"arr":"11:48","dep":"11:52","line":"山陽本線"},"岡山":{"arr":"13:08","dep":"","line":"山陽本線"},"行橋":{"arr":"06:32","dep":"06:32","line":"日豊本線"},"中津":{"arr":"07:08","dep":"07:08","line":"日豊本線"},"宇佐":{"arr":"07:28","dep":"07:28","line":"日豊本線"},"別府":{"arr":"08:18","dep":"08:22","line":"日豊本線"},"大分":{"arr":"08:32","dep":"08:48","line":"日豊本線→久大本線"},"佐伯":{"arr":"09:52","dep":"10:00","line":"日豊本線"},"延岡":{"arr":"11:28","dep":"11:36","line":"日豊本線"},"南宮崎":{"arr":"13:50","dep":"","line":"日豊本線"},"宮崎":{"arr":"13:42","dep":"13:48","line":"日豊本線"},"鳥栖":{"arr":"05:18","dep":"05:24","line":"鹿児島本線→長崎本線"},"久留米":{"arr":"05:28","dep":"05:34","line":"鹿児島本線→久大本線"},"大牟田":{"arr":"06:08","dep":"06:12","line":"鹿児島本線"},"熊本":{"arr":"07:02","dep":"07:12","line":"鹿児島本線→豊肥本線"},"八代":{"arr":"07:48","dep":"07:56","line":"鹿児島本線→肥薩線"},"出水":{"arr":"09:18","dep":"09:22","line":"肥薩おれんじ鉄道"},"川内":{"arr":"10:18","dep":"10:22","line":"肥薩おれんじ鉄道→鹿児島本線"},"鹿児島中央":{"arr":"11:22","dep":"11:32","line":"鹿児島本線→指宿枕崎線"},"佐賀":{"arr":"05:48","dep":"05:52","line":"長崎本線→唐津線"},"諫早":{"arr":"07:42","dep":"07:48","line":"長崎本線→大村線"},"長崎":{"arr":"08:22","dep":"","line":"長崎本線"},"武雄温泉":{"arr":"06:48","dep":"06:52","line":"佐世保線"},"佐世保":{"arr":"07:42","dep":"","line":"佐世保線"},"防府":{"arr":"07:56","dep":"08:00","line":"山陽本線"},"宮島口":{"arr":"10:02","dep":"10:06","line":"山陽本線"},"西条":{"arr":"10:55","dep":"10:58","line":"山陽本線"},"三原":{"arr":"11:22","dep":"11:26","line":"山陽本線"},"玉名":{"arr":"06:40","dep":"06:44","line":"鹿児島本線"},"新八代":{"arr":"08:02","dep":"08:06","line":"鹿児島本線"},"肥前山口":{"arr":"06:18","dep":"06:24","line":"長崎本線→佐世保線"},"有田":{"arr":"07:10","dep":"07:14","line":"佐世保線"},"日向市":{"arr":"12:12","dep":"12:16","line":"日豊本線"},"高鍋":{"arr":"13:12","dep":"13:16","line":"日豊本線"}},"parents":{"小倉":["博多"],"門司":["小倉"],"下関":["門司"],"新山口":["下関"],"防府":["新山口"],"徳山":["防府"],"岩国":["徳山"],"宮島口":["岩国"],"広島":["宮島口"],"西条":["広島"],"三原":["西条"],"福山":["三原"],"岡山":["福山"],"行橋":["小倉"],"中津":["行橋"],"宇佐":["中津"],"別府":["宇佐"],"大分":["別府"],"佐伯":["大分"],"延岡":["佐伯"],"日向市":["延岡"],"高鍋":["日向市"],"宮崎":["高鍋"],"南宮崎":["宮崎"],"鳥栖":["博多"],"久留米":["鳥栖"],"大牟田":["久留米"],"玉名":["大牟田"],"熊本":["玉名"],"八代":["熊本"],"新八代":["八代"],"出水":["新八代"],"川内":["出水"],"鹿児島中央":["川内"],"佐賀":["鳥栖"],"肥前山口":["佐賀"],"諫早":["肥前山口"],"長崎":["諫早"],"武雄温泉":["佐賀"],"有田":["武雄温泉"],"佐世保":["有田"]},"col":{"小倉":{"博多":"#F00000"},"門司":{"小倉":"#F00000"},"下関":{"門司":"#0099D9"},"新山口":{"下関":"#0099D9"},"防府":{"新山口":"#0099D9"},"徳山":{"防府":"#0099D9"},"岩国":{"徳山":"#0099D9"},"宮島口":{"岩国":"#0099D9"},"広島":{"宮島口":"#0099D9"},"西条":{"広島":"#0099D9"},"三原":{"西条":"#0099D9"},"福山":{"三原":"#0099D9"},"岡山":{"福山":"#0099D9"},"行橋":{"小倉":"#F00000"},"中津":{"行橋":"#F00000"},"宇佐":{"中津":"#F00000"},"別府":{"宇佐":"#F00000"},"大分":{"別府":"#F00000"},"佐伯":{"大分":"#F00000"},"延岡":{"佐伯":"#F00000"},"日向市":{"延岡":"#F00000"},"高鍋":{"日向市":"#F00000"},"宮崎":{"高鍋":"#F00000"},"南宮崎":{"宮崎":"#F00000"},"鳥栖":{"博多":"#F00000"},"久留米":{"鳥栖":"#F00000"},"大牟田":{"久留米":"#F00000"},"玉名":{"大牟田":"#F00000"},"熊本":{"玉名":"#F00000"},"八代":{"熊本":"#F00000"},"新八代":{"八代":"#F00000"},"出水":{"新八代":"#F39800"},"川内":{"出水":"#F39800"},"鹿児島中央":{"川内":"#F00000"},"佐賀":{"鳥栖":"#F00000"},"肥前山口":{"佐賀":"#F00000"},"諫早":{"肥前山口":"#F00000"},"長崎":{"諫早":"#F00000"},"武雄温泉":{"佐賀":"#F00000"},"有田":{"武雄温泉":"#F00000"},"佐世保":{"有田":"#F00000"}},"next":{"博多":[{"to":"小倉","dep":"05:00","line":"鹿児島本線→日豊本線"},{"to":"鳥栖","dep":"05:00","line":"鹿児島本線→長崎本線"}],"小倉":[{"to":"門司","dep":"06:12","line":"鹿児島本線→山陽本線"},{"to":"行橋","dep":"06:12","line":"日豊本線"}],"門司":[{"to":"下関","dep":"06:16","line":"山陽本線"}],"下関":[{"to":"新山口","dep":"06:28","line":"山陽本線→山口線"}],"新山口":[{"to":"防府","dep":"07:48","line":"山陽本線"}],"防府":[{"to":"徳山","dep":"08:00","line":"山陽本線"}],"徳山":[{"to":"岩国","dep":"08:32","line":"山陽本線"}],"岩国":[{"to":"宮島口","dep":"09:22","line":"山陽本線"}],"宮島口":[{"to":"広島","dep":"10:06","line":"山陽本線→芸備線"}],"広島":[{"to":"西条","dep":"10:28","line":"山陽本線"}],"西条":[{"to":"三原","dep":"10:58","line":"山陽本線"}],"三原":[{"to":"福山","dep":"11:26","line":"山陽本線"}],"福山":[{"to":"岡山","dep":"11:52","line":"山陽本線"}],"行橋":[{"to":"中津","dep":"06:32","line":"日豊本線"}],"中津":[{"to":"宇佐","dep":"07:08","line":"日豊本線"}],"宇佐":[{"to":"別府","dep":"07:28","line":"日豊本線"}],"別府":[{"to":"大分","dep":"08:22","line":"日豊本線→久大本線"}],"大分":[{"to":"佐伯","dep":"08:48","line":"日豊本線"}],"佐伯":[{"to":"延岡","dep":"10:00","line":"日豊本線"}],"延岡":[{"to":"日向市","dep":"11:36","line":"日豊本線"}],"日向市":[{"to":"高鍋","dep":"12:16","line":"日豊本線"}],"高鍋":[{"to":"宮崎","dep":"13:16","line":"日豊本線"}],"宮崎":[{"to":"南宮崎","dep":"13:48","line":"日豊本線"}],"鳥栖":[{"to":"久留米","dep":"05:24","line":"鹿児島本線→久大本線"},{"to":"佐賀","dep":"05:24","line":"長崎本線→唐津線"}],"久留米":[{"to":"大牟田","dep":"05:34","line":"鹿児島本線"}],"大牟田":[{"to":"玉名","dep":"06:12","line":"鹿児島本線"}],"玉名":[{"to":"熊本","dep":"06:44","line":"鹿児島本線→豊肥本線"}],"熊本":[{"to":"八代","dep":"07:12","line":"鹿児島本線→肥薩線"}],"八代":[{"to":"新八代","dep":"07:56","line":"鹿児島本線"}],"新八代":[{"to":"出水","dep":"08:06","line":"肥薩おれんじ鉄道"}],"出水":[{"to":"川内","dep":"09:22","line":"肥薩おれんじ鉄道→鹿児島本線"}],"川内":[{"to":"鹿児島中央","dep":"10:22","line":"鹿児島本線→指宿枕崎線"}],"佐賀":[{"to":"肥前山口","dep":"05:52","line":"長崎本線→佐世保線"},{"to":"武雄温泉","dep":"05:52","line":"佐世保線"}],"肥前山口":[{"to":"諫早","dep":"06:24","line":"長崎本線→大村線"}],"諫早":[{"to":"長崎","dep":"07:48","line":"長崎本線"}],"武雄温泉":[{"to":"有田","dep":"06:52","line":"佐世保線"}],"有田":[{"to":"佐世保","dep":"07:14","line":"佐世保線"}]}};
+    const D = { "info": { "博多": { "arr": "", "dep": "05:00", "line": "起点" }, "小倉": { "arr": "06:05", "dep": "06:12", "line": "鹿児島本線→日豊本線" }, "門司": { "arr": "06:12", "dep": "06:16", "line": "鹿児島本線→山陽本線" }, "下関": { "arr": "06:22", "dep": "06:28", "line": "山陽本線" }, "新山口": { "arr": "07:38", "dep": "07:48", "line": "山陽本線→山口線" }, "徳山": { "arr": "08:28", "dep": "08:32", "line": "山陽本線" }, "岩国": { "arr": "09:18", "dep": "09:22", "line": "山陽本線" }, "広島": { "arr": "10:18", "dep": "10:28", "line": "山陽本線→芸備線" }, "福山": { "arr": "11:48", "dep": "11:52", "line": "山陽本線" }, "岡山": { "arr": "13:08", "dep": "", "line": "山陽本線" }, "行橋": { "arr": "06:32", "dep": "06:32", "line": "日豊本線" }, "中津": { "arr": "07:08", "dep": "07:08", "line": "日豊本線" }, "宇佐": { "arr": "07:28", "dep": "07:28", "line": "日豊本線" }, "別府": { "arr": "08:18", "dep": "08:22", "line": "日豊本線" }, "大分": { "arr": "08:32", "dep": "08:48", "line": "日豊本線→久大本線" }, "佐伯": { "arr": "09:52", "dep": "10:00", "line": "日豊本線" }, "延岡": { "arr": "11:28", "dep": "11:36", "line": "日豊本線" }, "南宮崎": { "arr": "13:50", "dep": "", "line": "日豊本線" }, "宮崎": { "arr": "13:42", "dep": "13:48", "line": "日豊本線" }, "鳥栖": { "arr": "05:18", "dep": "05:24", "line": "鹿児島本線→長崎本線" }, "久留米": { "arr": "05:28", "dep": "05:34", "line": "鹿児島本線→久大本線" }, "大牟田": { "arr": "06:08", "dep": "06:12", "line": "鹿児島本線" }, "熊本": { "arr": "07:02", "dep": "07:12", "line": "鹿児島本線→豊肥本線" }, "八代": { "arr": "07:48", "dep": "07:56", "line": "鹿児島本線→肥薩線" }, "出水": { "arr": "09:18", "dep": "09:22", "line": "肥薩おれんじ鉄道" }, "川内": { "arr": "10:18", "dep": "10:22", "line": "肥薩おれんじ鉄道→鹿児島本線" }, "鹿児島中央": { "arr": "11:22", "dep": "11:32", "line": "鹿児島本線→指宿枕崎線" }, "佐賀": { "arr": "05:48", "dep": "05:52", "line": "長崎本線→唐津線" }, "諫早": { "arr": "07:42", "dep": "07:48", "line": "長崎本線→大村線" }, "長崎": { "arr": "08:22", "dep": "", "line": "長崎本線" }, "武雄温泉": { "arr": "06:48", "dep": "06:52", "line": "佐世保線" }, "佐世保": { "arr": "07:42", "dep": "", "line": "佐世保線" }, "防府": { "arr": "07:56", "dep": "08:00", "line": "山陽本線" }, "宮島口": { "arr": "10:02", "dep": "10:06", "line": "山陽本線" }, "西条": { "arr": "10:55", "dep": "10:58", "line": "山陽本線" }, "三原": { "arr": "11:22", "dep": "11:26", "line": "山陽本線" }, "玉名": { "arr": "06:40", "dep": "06:44", "line": "鹿児島本線" }, "新八代": { "arr": "08:02", "dep": "08:06", "line": "鹿児島本線" }, "肥前山口": { "arr": "06:18", "dep": "06:24", "line": "長崎本線→佐世保線" }, "有田": { "arr": "07:10", "dep": "07:14", "line": "佐世保線" }, "日向市": { "arr": "12:12", "dep": "12:16", "line": "日豊本線" }, "高鍋": { "arr": "13:12", "dep": "13:16", "line": "日豊本線" } }, "parents": { "小倉": ["博多"], "門司": ["小倉"], "下関": ["門司"], "新山口": ["下関"], "防府": ["新山口"], "徳山": ["防府"], "岩国": ["徳山"], "宮島口": ["岩国"], "広島": ["宮島口"], "西条": ["広島"], "三原": ["西条"], "福山": ["三原"], "岡山": ["福山"], "行橋": ["小倉"], "中津": ["行橋"], "宇佐": ["中津"], "別府": ["宇佐"], "大分": ["別府"], "佐伯": ["大分"], "延岡": ["佐伯"], "日向市": ["延岡"], "高鍋": ["日向市"], "宮崎": ["高鍋"], "南宮崎": ["宮崎"], "鳥栖": ["博多"], "久留米": ["鳥栖"], "大牟田": ["久留米"], "玉名": ["大牟田"], "熊本": ["玉名"], "八代": ["熊本"], "新八代": ["八代"], "出水": ["新八代"], "川内": ["出水"], "鹿児島中央": ["川内"], "佐賀": ["鳥栖"], "肥前山口": ["佐賀"], "諫早": ["肥前山口"], "長崎": ["諫早"], "武雄温泉": ["佐賀"], "有田": ["武雄温泉"], "佐世保": ["有田"] }, "col": { "小倉": { "博多": "#F00000" }, "門司": { "小倉": "#F00000" }, "下関": { "門司": "#0099D9" }, "新山口": { "下関": "#0099D9" }, "防府": { "新山口": "#0099D9" }, "徳山": { "防府": "#0099D9" }, "岩国": { "徳山": "#0099D9" }, "宮島口": { "岩国": "#0099D9" }, "広島": { "宮島口": "#0099D9" }, "西条": { "広島": "#0099D9" }, "三原": { "西条": "#0099D9" }, "福山": { "三原": "#0099D9" }, "岡山": { "福山": "#0099D9" }, "行橋": { "小倉": "#F00000" }, "中津": { "行橋": "#F00000" }, "宇佐": { "中津": "#F00000" }, "別府": { "宇佐": "#F00000" }, "大分": { "別府": "#F00000" }, "佐伯": { "大分": "#F00000" }, "延岡": { "佐伯": "#F00000" }, "日向市": { "延岡": "#F00000" }, "高鍋": { "日向市": "#F00000" }, "宮崎": { "高鍋": "#F00000" }, "南宮崎": { "宮崎": "#F00000" }, "鳥栖": { "博多": "#F00000" }, "久留米": { "鳥栖": "#F00000" }, "大牟田": { "久留米": "#F00000" }, "玉名": { "大牟田": "#F00000" }, "熊本": { "玉名": "#F00000" }, "八代": { "熊本": "#F00000" }, "新八代": { "八代": "#F00000" }, "出水": { "新八代": "#F39800" }, "川内": { "出水": "#F39800" }, "鹿児島中央": { "川内": "#F00000" }, "佐賀": { "鳥栖": "#F00000" }, "肥前山口": { "佐賀": "#F00000" }, "諫早": { "肥前山口": "#F00000" }, "長崎": { "諫早": "#F00000" }, "武雄温泉": { "佐賀": "#F00000" }, "有田": { "武雄温泉": "#F00000" }, "佐世保": { "有田": "#F00000" } }, "next": { "博多": [{ "to": "小倉", "dep": "05:00", "line": "鹿児島本線→日豊本線" }, { "to": "鳥栖", "dep": "05:00", "line": "鹿児島本線→長崎本線" }], "小倉": [{ "to": "門司", "dep": "06:12", "line": "鹿児島本線→山陽本線" }, { "to": "行橋", "dep": "06:12", "line": "日豊本線" }], "門司": [{ "to": "下関", "dep": "06:16", "line": "山陽本線" }], "下関": [{ "to": "新山口", "dep": "06:28", "line": "山陽本線→山口線" }], "新山口": [{ "to": "防府", "dep": "07:48", "line": "山陽本線" }], "防府": [{ "to": "徳山", "dep": "08:00", "line": "山陽本線" }], "徳山": [{ "to": "岩国", "dep": "08:32", "line": "山陽本線" }], "岩国": [{ "to": "宮島口", "dep": "09:22", "line": "山陽本線" }], "宮島口": [{ "to": "広島", "dep": "10:06", "line": "山陽本線→芸備線" }], "広島": [{ "to": "西条", "dep": "10:28", "line": "山陽本線" }], "西条": [{ "to": "三原", "dep": "10:58", "line": "山陽本線" }], "三原": [{ "to": "福山", "dep": "11:26", "line": "山陽本線" }], "福山": [{ "to": "岡山", "dep": "11:52", "line": "山陽本線" }], "行橋": [{ "to": "中津", "dep": "06:32", "line": "日豊本線" }], "中津": [{ "to": "宇佐", "dep": "07:08", "line": "日豊本線" }], "宇佐": [{ "to": "別府", "dep": "07:28", "line": "日豊本線" }], "別府": [{ "to": "大分", "dep": "08:22", "line": "日豊本線→久大本線" }], "大分": [{ "to": "佐伯", "dep": "08:48", "line": "日豊本線" }], "佐伯": [{ "to": "延岡", "dep": "10:00", "line": "日豊本線" }], "延岡": [{ "to": "日向市", "dep": "11:36", "line": "日豊本線" }], "日向市": [{ "to": "高鍋", "dep": "12:16", "line": "日豊本線" }], "高鍋": [{ "to": "宮崎", "dep": "13:16", "line": "日豊本線" }], "宮崎": [{ "to": "南宮崎", "dep": "13:48", "line": "日豊本線" }], "鳥栖": [{ "to": "久留米", "dep": "05:24", "line": "鹿児島本線→久大本線" }, { "to": "佐賀", "dep": "05:24", "line": "長崎本線→唐津線" }], "久留米": [{ "to": "大牟田", "dep": "05:34", "line": "鹿児島本線" }], "大牟田": [{ "to": "玉名", "dep": "06:12", "line": "鹿児島本線" }], "玉名": [{ "to": "熊本", "dep": "06:44", "line": "鹿児島本線→豊肥本線" }], "熊本": [{ "to": "八代", "dep": "07:12", "line": "鹿児島本線→肥薩線" }], "八代": [{ "to": "新八代", "dep": "07:56", "line": "鹿児島本線" }], "新八代": [{ "to": "出水", "dep": "08:06", "line": "肥薩おれんじ鉄道" }], "出水": [{ "to": "川内", "dep": "09:22", "line": "肥薩おれんじ鉄道→鹿児島本線" }], "川内": [{ "to": "鹿児島中央", "dep": "10:22", "line": "鹿児島本線→指宿枕崎線" }], "佐賀": [{ "to": "肥前山口", "dep": "05:52", "line": "長崎本線→佐世保線" }, { "to": "武雄温泉", "dep": "05:52", "line": "佐世保線" }], "肥前山口": [{ "to": "諫早", "dep": "06:24", "line": "長崎本線→大村線" }], "諫早": [{ "to": "長崎", "dep": "07:48", "line": "長崎本線" }], "武雄温泉": [{ "to": "有田", "dep": "06:52", "line": "佐世保線" }], "有田": [{ "to": "佐世保", "dep": "07:14", "line": "佐世保線" }] } };
     const map = document.getElementById('map');
     const W = 595.3, H = 841.9;
     let k = 1, tx = 0, ty = 0;

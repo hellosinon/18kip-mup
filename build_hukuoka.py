@@ -9,8 +9,7 @@ from html import escape
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-DATA = json.loads(
-    (ROOT / "data" / "福岡" / "timetable.json").read_text(encoding="utf-8"))
+DATA: dict = {}
 ORIGIN = "博多"
 CX, CY = 365.7, 493.2
 RING = 17.01
@@ -259,7 +258,7 @@ EDITION_LINKS = {
 
 
 def links_html(current: str) -> str:
-    items = ['    <a href="index.html">選択</a>']
+    items = []
     for key, (href, label) in EDITION_LINKS.items():
         cls = ' class="cur"' if key == current else ""
         items.append(f'    <a href="{href}"{cls}>{label}</a>')
@@ -353,7 +352,8 @@ def collapse_to_major() -> None:
     DATA["col"] = {}
     for frm, edges in new_next.items():
         for e in edges:
-            DATA["col"].setdefault(e["to"], {})[frm] = color_for_line(e.get("line") or "")
+            DATA["col"].setdefault(e["to"], {})[
+                frm] = color_for_line(e.get("line") or "")
 
 
 def apply_schematic_tree() -> None:
@@ -613,7 +613,8 @@ def build_svg(pos: dict[str, tuple[float, float]]) -> str:
 
     placed: list[tuple[float, float]] = []
     others = [(n, p) for n, p in pos.items() if n != ORIGIN]
-    others.sort(key=lambda np: math.hypot(np[1][0] - CX, np[1][1] - CY), reverse=True)
+    others.sort(key=lambda np: math.hypot(
+        np[1][0] - CX, np[1][1] - CY), reverse=True)
     for name, (x, y) in others:
         deg = BEARING.get(name, 0)
         rad = math.radians(deg)
@@ -737,7 +738,11 @@ def extract_js(src: str) -> str:
     return js
 
 
-def main() -> None:
+def build_hukuoka() -> None:
+    global DATA
+    DATA = json.loads(
+        (ROOT / "data" / "福岡" / "timetable.json").read_text(encoding="utf-8")
+    )
     apply_times()
     (ROOT / "data" / "福岡" / "timetable.json").write_text(
         json.dumps(DATA, ensure_ascii=False, indent=2), encoding="utf-8"
@@ -791,7 +796,11 @@ def main() -> None:
     out = ROOT / "hukuoka.html"
     out.write_text(html, encoding="utf-8")
     print(
-        f"wrote {out.name} ({out.stat().st_size} bytes), stations={len(DATA['info'])}")
+        f"hukuoka: wrote {out.name} ({out.stat().st_size} bytes), stations={len(DATA['info'])}")
+
+
+def main() -> None:
+    build_hukuoka()
 
 
 if __name__ == "__main__":

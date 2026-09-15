@@ -409,6 +409,7 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
     #links a:hover {
       background: #444
     }
+
     #links a.cur {
       border-color: #f2c14e;
       color: #f2c14e
@@ -975,7 +976,8 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
     }
   </style>
 </head>
-/  * --- HTML 本体 --- */
+/ * --- HTML 本体 --- */
+
 <body>
   <svg id="map" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 595.3 841.9">
     <defs>
@@ -2756,7 +2758,6 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
   </div>
 
   <div id="links">
-    <a href="index.html">選択</a>
     <a href="tokyo.html" class="cur">東京編</a>
     <a href="osaka.html">大阪編</a>
     <a href="hukuoka.html">福岡編</a>
@@ -2778,7 +2779,9 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
         </svg></button>
       <h2>各種到着マップ　東京編</h2>
       <p class="en2">SEISHUN 18 KIPPU ARRIVAL TIME MAP</p>
-      <p>青春18きっぷを使用して、平日に東京駅を始発で出発したときの各駅の到着時刻を等時線で表現したマップです。駅を選ぶと、その駅までの往路と、同じ所要で折り返したときの東京着（復路）も表示します。地図表現の都合上、主な路線および駅のみ掲載しています。</p>
+      <p>
+        青春18きっぷを使用して、平日に東京駅を始発で出発したときの各駅の到着時刻を等時線で表現したマップです。駅を選ぶと、その駅までの往路と、同じ所要で折り返したときの東京着（復路）も表示します。地図表現の都合上、主な路線および駅のみ掲載しています。
+      </p>
       <h3>使い方</h3>
       <ul>
         <li>駅をタップすると東京からの経路と復路の東京着を表示</li>
