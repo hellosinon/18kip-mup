@@ -76,7 +76,7 @@ python build.py hukuoka
 
 ## 注意
 
-今後変更するには
+変更した内容をgithub通さずにVSで完結させるコマンド
 
 git add .
 git commit -m "変更内容"

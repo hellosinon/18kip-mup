@@ -8,7 +8,7 @@ import sys
 import urllib.request
 from pathlib import Path
 
-from build_hukuoka import build_hukuoka
+from build_hukuoka import build_hukuoka, links_html
 
 ROOT = Path(__file__).resolve().parent
 TOKYO_URL = "https://maps.chizutodesign.com/18kippu/"
@@ -20,27 +20,28 @@ EDITIONS = {
         "url": TOKYO_URL,
         "local_ref": ROOT / "tokyo.html",
         "out": ROOT / "tokyo.html",
-        "other_link": '<div id="links"><a href="index.html">選択</a></div>\n',
+        "other_link": None,
         "remove_link": None,
     },
     "osaka": {
         "url": OSAKA_URL,
         "local_ref": ROOT / "osaka.html",
         "out": ROOT / "osaka.html",
-        "other_link": '<div id="links"><a href="index.html">選択</a></div>\n',
+        "other_link": None,
         "remove_link": None,
     },
     "hukuoka": {
         "url": HUKUOKA_URL,
         "local_ref": ROOT / "hukuoka.html",
         "out": ROOT / "hukuoka.html",
-        "other_link": '<div id="links"><a href="index.html">選択</a></div>\n',
+        "other_link": None,
         "remove_link": None,
     }
 }
 
 LINK_PATTERNS = [
-    re.compile(r'<div id="links"><a href="[^"]*">.*?</a></div>\n', re.S),
+    re.compile(r'<div id="links">.*?</div>\s*', re.S),
+    re.compile(r'<nav id="links">.*?</nav>\s*', re.S),
 ]
 
 
@@ -51,13 +52,22 @@ def fetch(url: str) -> str:
         return resp.read().decode("utf-8")
 
 
-def clean_html(html: str, other_link: str) -> str:
+def apply_css_links(html: str, edition: str) -> str:
+    links = (
+        '  <link rel="stylesheet" href="common.css">\n'
+        f'  <link rel="stylesheet" href="{edition}.css">'
+    )
+    html, n = re.subn(r"[ \t]*<style>.*?</style>", links, html, count=1, flags=re.S)
+    return html
+
+
+def clean_html(html: str, other_link: str, edition: str) -> str:
     html = html.split("<!-- Cloudflare Pages Analytics -->")[0].rstrip()
     html = html + "\n</body>\n</html>\n"
     for pat in LINK_PATTERNS:
         html = pat.sub("", html)
-    if other_link:
-        html = html.replace('<div id="zoom">', other_link + '<div id="zoom">')
+    html = apply_css_links(html, edition)
+    html = html.replace("</header>", "\n  " + links_html(edition) + "\n  </header>", 1)
     return html
 
 
@@ -90,7 +100,7 @@ def build_edition(name: str, cfg: dict, use_cache: bool = False) -> None:
         ref_path.write_text(html, encoding="utf-8")
         print(f"  saved {ref_path.name} ({len(html)} bytes)")
 
-    cleaned = clean_html(html, cfg["other_link"])
+    cleaned = clean_html(html, cfg["other_link"], name)
     cfg["out"].write_text(cleaned, encoding="utf-8")
     print(f"  created {cfg['out'].name} ({cfg['out'].stat().st_size} bytes)")
     extract_data(cleaned, name)

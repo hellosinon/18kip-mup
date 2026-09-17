@@ -258,7 +258,11 @@ EDITION_LINKS = {
 
 
 def links_html(current: str) -> str:
-    return '<div id="links">\n    <a href="index.html">選択</a>\n  </div>'
+    items = []
+    for key, (href, label) in EDITION_LINKS.items():
+        cur = ' class="cur"' if key == current else ""
+        items.append(f'    <a href="{href}"{cur}>{label}</a>')
+    return "<nav id=\"links\">\n" + "\n".join(items) + "\n  </nav>"
 
 
 def mins(t: str) -> int:
@@ -638,24 +642,18 @@ def build_svg(pos: dict[str, tuple[float, float]]) -> str:
     return "\n".join(parts)
 
 
-def extract_style(src: str) -> str:
-    m = re.search(r"(<style>.*?</style>)", src, re.S)
-    if not m:
-        raise SystemExit("style not found")
-    style = m.group(1)
-    extra = """
-    #links a.cur {
-      border-color: #f2c14e;
-      color: #f2c14e
-    }
-"""
-    return style.replace("  </style>", extra + "  </style>")
+def css_links(edition: str) -> str:
+    return (
+        '  <link rel="stylesheet" href="common.css">\n'
+        f'  <link rel="stylesheet" href="{edition}.css">'
+    )
 
 
 def chrome() -> str:
     return f"""  <header class="ver">
-    <h1>各種到着マップ<span class="ed">福岡編</span></h1>
+    <h1>18きっぷでどこまで行ける？<span class="ed">福岡編</span></h1>
     <p class="en">SEISHUN 18 KIPPU ARRIVAL TIME MAP / FUKUOKA</p>
+    {links_html("hukuoka")}
   </header>
 
   <div id="panel">
@@ -674,7 +672,6 @@ def chrome() -> str:
     </div>
   </div>
 
-  {links_html("hukuoka")}
   <div id="zoom">
     <button id="in" aria-label="拡大">＋</button>
     <button id="out" aria-label="縮小">－</button>
@@ -690,14 +687,13 @@ def chrome() -> str:
           stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M18 6L6 18M6 6l12 12" />
         </svg></button>
-      <h2>各種到着マップ<span class="ed">福岡編</span></h2>
+      <h2>18きっぷでどこまで行ける？<span class="ed">福岡編</span></h2>
       <p class="en2">SEISHUN 18 KIPPU ARRIVAL TIME MAP / FUKUOKA</p>
       <p>青春18きっぷを使用して、平日に博多駅を始発で出発したときの各駅の到着時刻を等時線で表現したマップです。駅を選ぶと、その駅までの往路と、同じ所要で折り返したときの博多着（復路）も表示します。地図表現の都合上、主な路線および駅のみ掲載しています。</p>
       <h3>使い方</h3>
       <ul>
         <li>駅をタップすると博多からの経路と復路の博多着を表示</li>
         <li>ピンチ / ホイールで拡大、ドラッグで移動</li>
-        <li>左上の選択から他の編へ戻る</li>
         <li>複数の経路がある駅はタブで切り替え</li>
       </ul>
       <h3>使用データ</h3>
@@ -755,7 +751,7 @@ def build_hukuoka() -> None:
     (ROOT / "data" / "福岡" / "map.svg").write_text(svg, encoding="utf-8")
 
     osaka = (ROOT / "osaka.html").read_text(encoding="utf-8")
-    style = extract_style(osaka)
+    style = css_links("hukuoka")
     js_tail = extract_js(osaka)
     d_json = json.dumps(DATA, ensure_ascii=False, separators=(",", ":"))
 
@@ -765,7 +761,7 @@ def build_hukuoka() -> None:
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>各種到着マップ 福岡編</title>
+  <title>18きっぷでどこまで行ける？ 福岡編</title>
   <meta name="description" content="青春18きっぷで平日に博多駅を始発で出発したとき、各駅に何時に到着できるかを等時線で表したマップです。">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
