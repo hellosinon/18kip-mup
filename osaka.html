@@ -5,11 +5,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>18きっぷでどこまで行ける？ 大阪編</title>
-  <meta name="description" content="青春18きっぷで平日に大阪駅を始発で出発したとき、各駅に何時に到着できるかを等時線で表したマップです。">
+  <meta name="description" content="いまの時刻から、青春18きっぷで次に乗れる列車をつないだときの各駅到着を等時線で表したマップです。">
   <link rel="canonical" href="https://maps.chizutodesign.com/18kippu/osaka/">
   <meta property="og:type" content="website">
   <meta property="og:title" content="18きっぷでどこまで行ける？ 大阪編">
-  <meta property="og:description" content="青春18きっぷで平日に大阪駅を始発で出発したとき、各駅に何時に到着できるかを等時線で表したマップです。">
+  <meta property="og:description" content="いまの時刻から、青春18きっぷで次に乗れる列車をつないだときの各駅到着を等時線で表したマップです。">
   <meta property="og:locale" content="ja_JP">
   <meta property="og:url" content="https://maps.chizutodesign.com/18kippu/osaka/">
   <meta property="og:image" content="https://maps.chizutodesign.com/18kippu/osaka/ogp.png">
@@ -1827,6 +1827,7 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
   <header class="ver">
     <h1>18きっぷでどこまで行ける？<span class="ed">大阪編</span></h1>
     <p class="en">SEISHUN 18 KIPPU ARRIVAL TIME MAP / OSAKA</p>
+    <p class="nowclk" id="nowclk"></p>
     <nav id="links">
       <a href="tokyo.html">東京編</a>
       <a href="osaka.html" class="cur">大阪編</a>
@@ -1868,10 +1869,11 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
       <h2>18きっぷでどこまで行ける？<span class="ed">大阪編</span></h2>
       <p class="en2">SEISHUN 18 KIPPU ARRIVAL TIME MAP / OSAKA</p>
       <p>
-        青春18きっぷを使用して、平日に大阪駅を始発で出発したときの各駅の到着時刻を等時線で表現したマップです。駅を選ぶと、その駅までの往路と、同じ所要で折り返したときの大阪着（復路）も表示します。地図表現の都合上、主な路線および駅のみ掲載しています。
+        いまの時刻から、次に乗れる列車→次の駅→また次の列車、とつないだときの各駅到着を等時線で表したマップです。駅を選ぶと、その駅までの往路と、同じ所要で折り返したときの大阪着（復路）も表示します。地図表現の都合上、主な路線および駅のみ掲載しています。
       </p>
       <h3>使い方</h3>
       <ul>
+        <li>現在時刻を起点に、次列車の乗り継ぎで到達する駅を表示</li>
         <li>駅をタップすると大阪からの経路と復路の大阪着を表示</li>
         <li>ピンチ / ホイールで拡大、ドラッグで移動</li>
         <li>複数の経路がある駅はタブで切り替え</li>
@@ -1881,7 +1883,7 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
         <li>JR各社・並行在来線各社の時刻表（2026年3月ダイヤ改正時点）</li>
       </ul>
       <p class="cau">
-        ※各駅に対して最も早く到達する列車を掲載しているため、乗換待ちの時間が長くなっている箇所があります。乗り換えのある駅の発車時刻を表示しています。
+        ※乗換待ちは始発パターンの間隔を流用した目安です。最終列車は考慮していません。乗り換えのある駅の発車時刻を表示しています。
         復路の大阪着は、到着後すぐに往路と同じ所要時間で折り返した場合の目安です。
         参考になるなら幸いです。ダイヤ改正などにより実際と異なる場合がありますので、お出かけの際は各自でお調べください。
     </div>
@@ -1986,28 +1988,100 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
       const pad = n => String(n).padStart(2, '0');
       return (days <= 0 ? '' : days === 1 ? '翌' : '翌々') + pad(h) + ':' + pad(m);
     }
-    function outboundStart(route) {
-      const ne = (D.next[route[0]] || []).find(e => e.to === route[1]);
-      return (ne && ne.dep) || D.info[ORIGIN].dep;
+    const CUTOFF = 24 * 60 + 180;
+    let LIVE = { now: 0, arr: {}, hops: [], far: {} };
+
+    function nowMin() {
+      const d = new Date();
+      return d.getHours() * 60 + d.getMinutes();
     }
-    function returnTrip(name, route) {
-      const arr = D.info[name] && D.info[name].arr;
-      if (!arr || name === ORIGIN || !route || route.length < 2) return null;
+    function hopWaitRun(a, b) {
+      const ne = (D.next[a] || []).find(e => e.to === b);
+      if (!ne || !ne.dep || !D.info[b] || !D.info[b].arr) return null;
+      const origA = a === ORIGIN
+        ? ne.dep
+        : (D.info[a].arr || D.info[a].dep || ne.dep);
+      const tA = parseAfter(origA, null);
+      const tDep = parseAfter(ne.dep, tA);
+      const tB = parseAfter(D.info[b].arr, tDep);
+      const wait = a === ORIGIN ? 0 : Math.max(0, tDep - tA);
+      return { wait: wait, run: Math.max(1, tB - tDep), line: ne.line || D.info[b].line };
+    }
+    function liveSegs(route) {
+      if (!route || route.length < 2) return [];
       const segs = [];
-      let t = parseAfter(outboundStart(route), null);
+      let t = LIVE.now;
       for (let i = 0; i < route.length - 1; i++) {
         const a = route[i], b = route[i + 1];
-        const ne = (D.next[a] || []).find(e => e.to === b);
-        const dep = (ne && ne.dep) || D.info[a].dep || D.info[a].arr;
-        const bArr = D.info[b].arr;
-        if (!dep || !bArr) continue;
-        const tDep = parseAfter(dep, t);
-        const tArr = parseAfter(bArr, tDep);
-        segs.push({ from: a, to: b, wait: tDep - t, run: tArr - tDep, line: (ne && ne.line) || D.info[b].line });
+        const h = hopWaitRun(a, b);
+        if (!h) continue;
+        const tDep = t + h.wait;
+        const tArr = tDep + h.run;
+        segs.push({ from: a, to: b, wait: h.wait, run: h.run, tDep: tDep, tArr: tArr, line: h.line });
         t = tArr;
       }
+      return segs;
+    }
+    function simulate() {
+      const now = nowMin();
+      const hops = [];
+      Object.keys(D.next).forEach(a => {
+        (D.next[a] || []).forEach(e => {
+          const h = hopWaitRun(a, e.to);
+          if (h) hops.push({ a: a, b: e.to, wait: h.wait, run: h.run, line: h.line });
+        });
+      });
+      const arr = {}; arr[ORIGIN] = now;
+      const q = [[now, ORIGIN]];
+      while (q.length) {
+        q.sort((x, y) => x[0] - y[0]);
+        const cur = q.shift();
+        const t = cur[0], u = cur[1];
+        if (t !== arr[u]) continue;
+        hops.forEach(h => {
+          if (h.a !== u) return;
+          const tArr = t + h.wait + h.run;
+          if (tArr > CUTOFF) return;
+          if (arr[h.b] == null || tArr < arr[h.b]) {
+            arr[h.b] = tArr;
+            q.push([tArr, h.b]);
+          }
+        });
+      }
+      const far = {};
+      let best = -1;
+      Object.keys(arr).forEach(n => {
+        if (n === ORIGIN) return;
+        const child = hops.some(h => h.a === n && arr[h.b] != null);
+        if (!child && arr[n] > best) best = arr[n];
+      });
+      Object.keys(arr).forEach(n => {
+        if (n === ORIGIN) return;
+        const child = hops.some(h => h.a === n && arr[h.b] != null);
+        if (!child && arr[n] >= best - 20) far[n] = 1;
+      });
+      LIVE = { now: now, arr: arr, hops: hops, far: far };
+      const clk = document.getElementById('nowclk');
+      if (clk) {
+        const names = Object.keys(far).sort((a, b) => arr[b] - arr[a]);
+        const farTxt = names.length
+          ? names.slice(0, 3).map(n => n + ' ' + fmtClock(arr[n]) + '着').join('　')
+          : '到達駅なし';
+        clk.textContent = 'いま ' + fmtClock(now) + '　次列車で出発　最遠 ' + farTxt;
+      }
+      map.querySelectorAll('[data-st],[data-sn]').forEach(el => {
+        const n = el.dataset.st || el.dataset.sn;
+        const ok = n === ORIGIN || arr[n] != null;
+        el.classList.toggle('unreach', !ok);
+        el.classList.toggle('far', !!far[n]);
+      });
+    }
+    function returnTrip(name, route) {
+      if (name === ORIGIN || !route || route.length < 2) return null;
+      const segs = liveSegs(route);
       if (!segs.length) return null;
-      const destArr = t;
+      const destArr = segs[segs.length - 1].tArr;
+      if (LIVE.arr[name] == null) return { destArr: destArr, originBack: null, stops: [], segs: segs, unreachable: true };
       let back = destArr;
       const stops = [{ st: name, t: back, role: 'dep', line: segs[segs.length - 1].line }];
       for (let i = segs.length - 1; i >= 0; i--) {
@@ -2020,23 +2094,37 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
         });
         if (i > 0) back += segs[i].wait;
       }
-      return { destArr, originBack: back, stops, segs };
+      return { destArr: destArr, originBack: back, stops: stops, segs: segs };
     }
 
     function tipHTML(n) {
-      const d = D.info[n], rows = [];
-      if (d.arr && n !== ORIGIN)
-        rows.push(`<div class="r"><span class="t">${d.arr}<i>着</i></span>` +
-          `<span class="l">${lineName(D.parents[n] && D.parents[n].length ? D.info[n].line : '')}</span></div>`);
-      (D.next[n] || []).forEach(e => {
-        if (e.dep === d.arr) return;          // 同一列車で通過する駅は発を出さない
-        rows.push(`<div class="r"><span class="t">${e.dep}<i>発</i></span>` +
-          `<span class="l">${lineName(e.line)}</span></div>`);
-      });
-      const ret = returnTrip(n, routesTo(n)[0]);
-      if (ret)
-        rows.push(`<div class="r"><span class="t">${fmtClock(ret.originBack)}<i>戻</i></span>` +
-          `<span class="l">大阪着（復路）</span></div>`);
+      const rows = [];
+      const liveA = LIVE.arr[n];
+      if (n === ORIGIN) {
+        (D.next[n] || []).forEach(e => {
+          const h = hopWaitRun(n, e.to);
+          if (!h) return;
+          rows.push(`<div class="r"><span class="t">${fmtClock(LIVE.now + h.wait)}<i>発</i></span>` +
+            `<span class="l">${lineName(h.line)}</span></div>`);
+        });
+      } else {
+        const segs = liveSegs(routesTo(n)[0]);
+        if (liveA != null)
+          rows.push(`<div class="r"><span class="t">${fmtClock(liveA)}<i>着</i></span>` +
+            `<span class="l">${lineName(D.parents[n] && D.parents[n].length ? D.info[n].line : '')}</span></div>`);
+        segs.forEach(e => {
+          if (e.from !== n) return;
+          if (e.tDep === liveA) return;
+          rows.push(`<div class="r"><span class="t">${fmtClock(e.tDep)}<i>発</i></span>` +
+            `<span class="l">${lineName(e.line)}</span></div>`);
+        });
+        if (liveA == null)
+          rows.push(`<div class="r"><span class="t">—</span><span class="l">本日は到達不可</span></div>`);
+        const ret = returnTrip(n, routesTo(n)[0]);
+        if (ret && ret.originBack != null)
+          rows.push(`<div class="r"><span class="t">${fmtClock(ret.originBack)}<i>戻</i></span>` +
+            `<span class="l">大阪着（復路）</span></div>`);
+      }
       return `<div class="nm">${n}</div><div class="tms">${rows.join('')}</div>`;
     }
     function placeTip(x, y) {
@@ -2160,10 +2248,14 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
 
       const i = D.info[name];
       document.getElementById('pn').textContent = name;
+      const segs = liveSegs(route);
       const ret = returnTrip(name, route);
-      document.getElementById('pt').innerHTML = ret
-        ? `${i.arr} 着<br><span class="back">${fmtClock(ret.originBack)} 大阪着</span>`
-        : ((name === ORIGIN) ? `${i.arr} 発` : `${i.arr} 着`);
+      const liveA = LIVE.arr[name];
+      document.getElementById('pt').innerHTML = liveA == null
+        ? '本日は到達不可'
+        : (ret && ret.originBack != null
+          ? `${fmtClock(liveA)} 着<br><span class="back">${fmtClock(ret.originBack)} 大阪着</span>`
+          : `${fmtClock(liveA)} 着`);
       const ol = document.getElementById('po'); ol.innerHTML = '';
       route.forEach((s, idx) => {
         const d = D.info[s];
@@ -2171,17 +2263,17 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
         const cOut = idx < route.length - 1 ? ((D.col[route[idx + 1]] || {})[s] || '#3a424c') : '#3a424c';
         const li = document.createElement('li');
         const isLast0 = idx === route.length - 1;
-        // その経路で実際に乗る列車の発車時刻（駅の代表値ではなく区間ごとに引く）
-        const ne = isLast0 ? null : (D.next[s] || []).find(e => e.to === route[idx + 1]);
-        const depT = ne ? ne.dep : '';
-        const showDep = !!depT && depT !== d.arr;
+        const seg = isLast0 ? null : segs.find(e => e.from === s && e.to === route[idx + 1]);
+        const arrT = idx === 0 ? LIVE.now : (segs[idx - 1] ? segs[idx - 1].tArr : null);
+        const depT = seg ? seg.tDep : null;
+        const showDep = depT != null && depT !== arrT;
         const thru = idx > 0 && !isLast0 && !showDep;
         li.className = 'st' + (idx === 0 ? ' first' : '') + (isLast0 ? ' last' : '') + (s === name ? ' pk' : '') + (thru ? ' thru' : '');
         li.style.setProperty('--cin', cIn);
         li.style.setProperty('--cout', cOut);
         const tm = idx === 0
-          ? (depT || d.dep || d.arr) + ' 発'
-          : (showDep ? `${d.arr ? d.arr + ' 着' : ''}<b>${depT} 発</b>` : (d.arr ? d.arr + ' 着' : ''));
+          ? fmtClock(depT != null ? depT : LIVE.now) + ' 発'
+          : (showDep ? `${arrT != null ? fmtClock(arrT) + ' 着' : ''}<b>${fmtClock(depT)} 発</b>` : (arrT != null ? fmtClock(arrT) + ' 着' : ''));
         li.innerHTML = `<div class="tm">${tm}</div><div class="rail"><i class="dot"></i></div><div class="nm">${s}</div>`;
         ol.appendChild(li);
 
@@ -2193,7 +2285,7 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
           ol.appendChild(sg);
         }
       });
-      if (ret) {
+      if (ret && ret.stops && ret.stops.length) {
         const hd = document.createElement('li');
         hd.className = 'hd';
         hd.innerHTML = '<div class="nm">復路　同所要で折り返した目安</div>';
@@ -2309,6 +2401,11 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
       const h = document.getElementById('hint'); h.classList.add('gone'); setTimeout(() => h.remove(), 600);
     }
     setTimeout(hide, 5000);
+    simulate();
+    setInterval(function () {
+      simulate();
+      if (curName) select(curName, curIdx);
+    }, 60000);
     fit();
   </script>
   <script src="sl-transition.js"></script>
