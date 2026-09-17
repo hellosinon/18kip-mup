@@ -174,7 +174,7 @@ html:not(.is-safari) #map.sel .on.pick {
 #tip .t {
   font-weight: 500;
   font-size: 12px;
-  color: #9aa0a8;
+  color: #fff;
   letter-spacing: .02em;
   white-space: nowrap
 }
@@ -182,7 +182,7 @@ html:not(.is-safari) #map.sel .on.pick {
 #tip .t i {
   font-style: normal;
   font-size: 10px;
-  color: #6f767f;
+  color: #fff;
   margin-left: 2px
 }
 
@@ -264,9 +264,14 @@ header.ver .nowclk {
   font-size: .68rem;
   font-weight: 500;
   letter-spacing: .04em;
-  color: #f2c14e;
+  color: #fff;
   white-space: normal;
   line-height: 1.45
+}
+
+/* 等時線の「N時」ラベル。東京の駅名と同じ白 */
+#map > text {
+  fill: #fff
 }
 
 #map .unreach {
@@ -275,11 +280,11 @@ header.ver .nowclk {
 }
 
 #map g[data-st].far text:last-child {
-  fill: #f2c14e
+  fill: #fff
 }
 
 #map circle[data-st].far {
-  fill: #f2c14e
+  fill: #fff
 }
 
 .ab h2 .ed {
@@ -484,15 +489,22 @@ button:focus-visible {
 .ph .t {
   margin-top: 3px;
   font-size: 12px;
-  color: #9aa0a8;
+  color: #fff;
   font-family: 'Hanken Grotesk', sans-serif;
   font-weight: 500;
   letter-spacing: .03em;
   line-height: 1.45
 }
 
+.ph .t .meta {
+  color: #fff;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 11px;
+  letter-spacing: .04em
+}
+
 .ph .t .back {
-  color: #cfd4da
+  color: #fff
 }
 
 .ph .x {
@@ -534,9 +546,9 @@ button:focus-visible {
 }
 
 #tabs button.sel {
-  border-color: #f2c14e;
-  color: #f2c14e;
-  background: rgba(242, 193, 78, .1)
+  border-color: #fff;
+  color: #fff;
+  background: rgba(255, 255, 255, .1)
 }
 
 .pb {
@@ -608,7 +620,7 @@ li.st .tm {
   text-align: right;
   font-weight: 500;
   font-size: 11px;
-  color: #9aa0a8;
+  color: #fff;
   line-height: 1.18;
   letter-spacing: .02em
 }

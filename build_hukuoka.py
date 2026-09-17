@@ -498,9 +498,9 @@ def hour_label_svg(hour: int, x: float, y: float, rot: str) -> list[str]:
         ntr = f"matrix(0.0 2.0 -2.0 0.0 {x - 1.6:.2f} {y - 9.4:.2f})"
         jtr = f"matrix(0.0 1.0 -1.0 0.0 {x + 3.4:.2f} {y + 3.4:.2f})"
     return [
-        f'    <text transform="{ntr}" fill="#6e6e6e" font-size="6" font-weight="500" '
+        f'    <text transform="{ntr}" fill="#fff" font-size="6" font-weight="500" '
         f'font-family="\'Barlow\', sans-serif">{num}</text>',
-        f'    <text transform="{jtr}" fill="#6e6e6e" font-size="6" font-weight="500" '
+        f'    <text transform="{jtr}" fill="#fff" font-size="6" font-weight="500" '
         f'font-family="\'Noto Sans JP\', sans-serif">時</text>',
     ]
 
