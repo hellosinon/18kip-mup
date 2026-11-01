@@ -1813,6 +1813,8 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
     <h1>18きっぷでどこまで行ける？<span class="ed">大阪編</span></h1>
     <p class="en">SEISHUN 18 KIPPU ARRIVAL TIME MAP / OSAKA</p>
     <p class="nowclk" id="nowclk"></p>
+    <p class="nextclk" id="nextclk"></p>
+
     <nav id="links">
       <a href="tokyo.html">東京編</a>
       <a href="osaka.html" class="cur">大阪編</a>
@@ -1989,6 +1991,28 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
       const pad = n => String(n).padStart(2, '0');
       return (days <= 0 ? '' : days === 1 ? '翌' : '翌々') + pad(h) + ':' + pad(m);
     }
+    // 大阪駅から、登録データ内で次に来る発車時刻を探す
+    function getNextOriginDeparture(now) {
+      const departures = D.next[ORIGIN] || [];
+      let best = null;
+
+      departures.forEach(e => {
+        if (!e.dep) return;
+
+        // 現在時刻より前の時刻なら、翌日の時刻として扱う
+        const time = parseAfter(e.dep, now);
+
+        if (best === null || time < best.time) {
+          best = {
+            time: time,
+            to: e.to,
+            line: e.line
+          };
+        }
+      });
+
+      return best;
+    }
     const CUTOFF = 24 * 60 + 180;
     let LIVE = { now: 0, arr: {}, hops: [], far: {} };
 
@@ -2069,6 +2093,20 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
           ? names.slice(0, 3).map(n => n + ' ' + fmtClock(arr[n]) + '着').join('　')
           : '到達駅なし';
         clk.textContent = 'いま ' + fmtClock(now) + '　次列車で出発　最遠 ' + farTxt;
+      }
+      // ヘッダーに大阪駅の次発車時刻を表示
+      const nextClk = document.getElementById('nextclk');
+
+      if (nextClk) {
+        const next = getNextOriginDeparture(now);
+
+        if (next) {
+          nextClk.textContent =
+            '大阪駅 次発車 ' + fmtClock(next.time) +
+            '　' + next.to + '方面';
+        } else {
+          nextClk.textContent = '大阪駅 次発車時刻：データなし';
+        }
       }
       map.querySelectorAll('[data-st],[data-sn]').forEach(el => {
         const n = el.dataset.st || el.dataset.sn;

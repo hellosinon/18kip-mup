@@ -258,7 +258,8 @@ header.ver p.en {
   letter-spacing: .3em
 }
 
-header.ver .nowclk {
+header.ver .nowclk,
+header.ver .nextclk {
   margin: 6px 0 0;
   font-family: 'Noto Sans JP', sans-serif;
   font-size: .68rem;
