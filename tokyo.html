@@ -4,11 +4,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>18きっぷでどこまで行ける？ 東京編</title>
+  <title>寄り道旅ナビ 東京編</title>
   <meta name="description" content="いまの時刻から、青春18きっぷで次に乗れる列車をつないだときの各駅到着を等時線で表したマップです。">
   <link rel="canonical" href="https://maps.chizutodesign.com/18kippu/">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="18きっぷでどこまで行ける？ 東京編">
+  <meta property="og:title" content="寄り道旅ナビ 東京編">
   <meta property="og:description" content="いまの時刻から、青春18きっぷで次に乗れる列車をつないだときの各駅到着を等時線で表したマップです。">
   <meta property="og:locale" content="ja_JP">
   <meta property="og:url" content="https://maps.chizutodesign.com/18kippu/">
@@ -1789,7 +1789,7 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
   </svg>
 
   <header class="ver">
-    <h1>18きっぷでどこまで行ける？<span class="ed">東京編</span></h1>
+    <h1>寄り道旅ナビ<span class="ed">東京編</span></h1>
     <p class="en">SEISHUN 18 KIPPU ARRIVAL TIME MAP / TOKYO</p>
     <p class="nowclk" id="nowclk"></p>
     <nav id="links">
@@ -1830,7 +1830,7 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
           stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M18 6L6 18M6 6l12 12" />
         </svg></button>
-      <h2>18きっぷでどこまで行ける？<span class="ed">東京編</span></h2>
+      <h2>寄り道旅ナビ<span class="ed">東京編</span></h2>
       <p class="en2">SEISHUN 18 KIPPU ARRIVAL TIME MAP / TOKYO</p>
       <p>
         いまの時刻から、東京駅の時刻表で乗れる最初の列車を探し、着いた駅の時刻表でまた次の列車を、とつないで最遠駅まで行きます。そこから東京方面の時刻表で帰れる列車と乗換をたどり、東京着を出します。駅を選ぶと同じ流れの往路・復路を表示します。地図表現の都合上、主な路線および駅のみ掲載しています。
@@ -2357,10 +2357,10 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
       document.getElementById('pt').innerHTML = liveA == null
         ? '本日は到達不可'
         : `${fmtClock(liveA)} 着` +
-          (meta ? `<br><span class="meta">${meta}</span>` : '') +
-          (ret && ret.tokyoBack != null
-            ? `<br><span class="back">${fmtClock(ret.tokyoBack)} 東京着</span>`
-            : '');
+        (meta ? `<br><span class="meta">${meta}</span>` : '') +
+        (ret && ret.tokyoBack != null
+          ? `<br><span class="back">${fmtClock(ret.tokyoBack)} 東京着</span>`
+          : '');
       const ol = document.getElementById('po'); ol.innerHTML = '';
       route.forEach((s, idx) => {
         const d = D.info[s];

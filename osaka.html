@@ -4,11 +4,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>18きっぷでどこまで行ける？ 大阪編</title>
+  <title>寄り道旅ナビ 大阪編</title>
   <meta name="description" content="いまの時刻から、青春18きっぷで次に乗れる列車をつないだときの各駅到着を等時線で表したマップです。">
   <link rel="canonical" href="https://maps.chizutodesign.com/18kippu/osaka/">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="18きっぷでどこまで行ける？ 大阪編">
+  <meta property="og:title" content="寄り道旅ナビ 大阪編">
   <meta property="og:description" content="いまの時刻から、青春18きっぷで次に乗れる列車をつないだときの各駅到着を等時線で表したマップです。">
   <meta property="og:locale" content="ja_JP">
   <meta property="og:url" content="https://maps.chizutodesign.com/18kippu/osaka/">
@@ -31,7 +31,7 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;700&family=Barlow:wght@500&family=Hanken+Grotesk:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700&display=swap">
   <link rel="stylesheet" href="sl-transition.css">
-  <script>try{if(sessionStorage.getItem('sl-dir'))document.documentElement.classList.add('sl-wait')}catch(e){}</script>
+  <script>try { if (sessionStorage.getItem('sl-dir')) document.documentElement.classList.add('sl-wait') } catch (e) { }</script>
   <link rel="stylesheet" href="common.css">
   <link rel="stylesheet" href="osaka.css">
 </head>
@@ -1810,7 +1810,7 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
   </svg>
 
   <header class="ver">
-    <h1>18きっぷでどこまで行ける？<span class="ed">大阪編</span></h1>
+    <h1>寄り道旅ナビ<span class="ed">大阪編</span></h1>
     <p class="en">SEISHUN 18 KIPPU ARRIVAL TIME MAP / OSAKA</p>
     <p class="nowclk" id="nowclk"></p>
     <p class="nextclk" id="nextclk"></p>
@@ -1853,7 +1853,7 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
           stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M18 6L6 18M6 6l12 12" />
         </svg></button>
-      <h2>18きっぷでどこまで行ける？<span class="ed">大阪編</span></h2>
+      <h2>寄り道旅ナビ<span class="ed">大阪編</span></h2>
       <p class="en2">SEISHUN 18 KIPPU ARRIVAL TIME MAP / OSAKA</p>
       <p>
         いまの時刻から、次に乗れる列車→次の駅→また次の列車、とつないだときの各駅到着を等時線で表したマップです。駅を選ぶと、その駅までの往路と、同じ所要で折り返したときの大阪着（復路）も表示します。地図表現の都合上、主な路線および駅のみ掲載しています。
@@ -2294,10 +2294,10 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
       document.getElementById('pt').innerHTML = liveA == null
         ? '本日は到達不可'
         : `${fmtClock(liveA)} 着` +
-          (meta ? `<br><span class="meta">${meta}</span>` : '') +
-          (ret && ret.originBack != null
-            ? `<br><span class="back">${fmtClock(ret.originBack)} 大阪着</span>`
-            : '');
+        (meta ? `<br><span class="meta">${meta}</span>` : '') +
+        (ret && ret.originBack != null
+          ? `<br><span class="back">${fmtClock(ret.originBack)} 大阪着</span>`
+          : '');
       const ol = document.getElementById('po'); ol.innerHTML = '';
       route.forEach((s, idx) => {
         const d = D.info[s];
