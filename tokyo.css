@@ -1,1 +1,153 @@
 /* 東京編 */
+/* ==========================
+   経路検索フォーム
+========================== */
+
+.route-search {
+  position: fixed;
+  z-index: 20;
+  top: 14px;
+  left: min(650px, 41vw);
+  right: 75px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.94);
+  border: 1px solid #00e5ff;
+  border-radius: 14px;
+  box-shadow: 0 0 14px rgba(0, 229, 255, 0.2);
+  color: #fff;
+}
+
+.search-title {
+  color: #00e5ff;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.search-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr 0.8fr 1fr auto;
+  gap: 8px;
+  align-items: end;
+}
+
+.search-fields label {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.search-fields label span {
+  font-size: 11px;
+  color: #a9dce5;
+}
+
+.search-fields input,
+.search-fields select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  height: 37px;
+  padding: 0 8px;
+  border: 1px solid #42636d;
+  border-radius: 7px;
+  background: #080d10;
+  color: white;
+  font-size: 13px;
+}
+
+.search-fields button {
+  height: 37px;
+  padding: 0 18px;
+  border: 1px solid #00e5ff;
+  border-radius: 8px;
+  background: #00aebd;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.search-fields button:hover {
+  background: #00d5e5;
+  box-shadow: 0 0 12px #00e5ff;
+}
+
+#searchMessage {
+  margin: 6px 0 0;
+  font-size: 11px;
+  color: #ffcf57;
+}
+
+/* ==========================
+   料金比較
+========================== */
+
+.fare-box {
+  display: none;
+  padding: 12px 14px;
+  border-top: 1px solid #00bcd4;
+  border-bottom: 1px solid #253c43;
+  background: rgba(0, 15, 20, 0.95);
+  color: #fff;
+}
+
+.fare-box.show {
+  display: block;
+}
+
+.fare-heading {
+  color: #00e5ff;
+  font-weight: bold;
+  font-size: 13px;
+  margin-bottom: 9px;
+}
+
+.fare-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 0;
+  font-size: 13px;
+}
+
+.fare-row strong {
+  font-size: 17px;
+  color: #fff;
+}
+
+.fare-row:first-of-type strong {
+  color: #ffc94a;
+}
+
+.fare-row:last-of-type strong {
+  color: #00e5a8;
+}
+
+.fare-note {
+  padding-top: 7px;
+  font-size: 10px;
+  color: #8ca8b0;
+}
+
+/* ==========================
+   スマートフォン
+========================== */
+
+@media (max-width: 760px) {
+  .route-search {
+    top: 145px;
+    left: 10px;
+    right: 10px;
+  }
+
+  .search-fields {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .search-fields button {
+    grid-column: span 2;
+  }
+}

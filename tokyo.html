@@ -1799,6 +1799,44 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
     </nav>
   </header>
 
+  <!-- 経路検索フォーム -->
+  <section id="routeSearch" class="route-search">
+    <div class="search-title">ROUTE SEARCH</div>
+
+    <div class="search-fields">
+      <label>
+        <span>出発駅</span>
+        <input id="searchFrom" value="東京" readonly>
+      </label>
+
+      <label>
+        <span>目的地</span>
+        <input id="searchTo" list="stationOptions"
+          placeholder="駅名を入力">
+        <datalist id="stationOptions"></datalist>
+      </label>
+
+      <label>
+        <span>検索開始時間</span>
+        <input id="searchTime" type="time" value="05:00">
+      </label>
+
+      <label>
+        <span>きっぷ</span>
+        <select id="ticketType">
+          <option value="18">青春18きっぷ</option>
+          <option value="normal">通常運賃</option>
+        </select>
+      </label>
+
+      <button id="routeSearchBtn" type="button">
+        検索
+      </button>
+    </div>
+
+    <p id="searchMessage" role="status"></p>
+  </section>
+
   <div id="panel">
     <div id="grip" aria-label="開閉"></div>
     <div class="ph">
@@ -1810,6 +1848,25 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
         </svg></button>
     </div>
     <div id="tabs"></div>
+    <!-- 料金比較 -->
+    <div id="fareBox" class="fare-box">
+      <div class="fare-heading">料金の比較</div>
+
+      <div class="fare-row">
+        <span>在来線運賃</span>
+        <strong id="localFare">未登録</strong>
+      </div>
+
+      <div class="fare-row">
+        <span>青春18きっぷ</span>
+        <strong id="seishunFare">未登録</strong>
+      </div>
+
+      <div class="fare-note" id="fareNote">
+        料金データを登録すると比較できます。
+      </div>
+    </div>
+
     <div class="pb">
       <ol id="po"></ol>
     </div>
@@ -2517,6 +2574,152 @@ iOS/iPadOS は全ブラウザが WebKit なので端末で、macOS は Chromium 
       const h = document.getElementById('hint'); h.classList.add('gone'); setTimeout(() => h.remove(), 600);
     }
     setTimeout(hide, 5000);
+    // ==========================
+    // 経路検索機能
+    // ==========================
+
+    const searchFrom = document.getElementById('searchFrom');
+    const searchTo = document.getElementById('searchTo');
+    const searchTime = document.getElementById('searchTime');
+    const ticketType = document.getElementById('ticketType');
+    const searchMessage = document.getElementById('searchMessage');
+
+    // 駅候補を既存の駅データから作成
+    const stationOptions = document.getElementById('stationOptions');
+
+    Object.keys(D.info).forEach(name => {
+      const option = document.createElement('option');
+      option.value = name;
+      stationOptions.appendChild(option);
+    });
+
+    // 運賃データ
+    // 金額が確認できた区間から登録する
+    const FARE_DATA = {
+      "東京|高崎": {
+        local: null,
+        seishun: null
+      }
+
+      // 追加例
+      // "東京|宇都宮": {
+      //   local: 1980,
+      //   seishun: 2410
+      // }
+    };
+
+    // 料金表示
+    function updateFare(from, to) {
+      const key = from + "|" + to;
+      const fare = FARE_DATA[key];
+
+      const fareBox = document.getElementById('fareBox');
+      const localFare = document.getElementById('localFare');
+      const seishunFare = document.getElementById('seishunFare');
+      const fareNote = document.getElementById('fareNote');
+
+      fareBox.classList.add('show');
+
+      if (!fare) {
+        localFare.textContent = '未登録';
+        seishunFare.textContent = '未登録';
+        fareNote.textContent =
+          'この区間の料金データはまだ登録されていません。';
+        return;
+      }
+
+      localFare.textContent =
+        fare.local == null
+          ? '未登録'
+          : fare.local.toLocaleString('ja-JP') + '円';
+
+      seishunFare.textContent =
+        fare.seishun == null
+          ? '未登録'
+          : fare.seishun.toLocaleString('ja-JP') + '円';
+
+      if (fare.local != null && fare.seishun != null) {
+        const diff = fare.local - fare.seishun;
+
+        fareNote.textContent = diff > 0
+          ? '青春18きっぷの1回分相当が ' +
+            diff.toLocaleString('ja-JP') + '円お得'
+          : diff < 0
+            ? '通常運賃の方が ' +
+              Math.abs(diff).toLocaleString('ja-JP') + '円お得'
+            : '料金は同額です。';
+      } else {
+        fareNote.textContent =
+          '料金データを確認してください。';
+      }
+    }
+
+    // 検索実行
+    document.getElementById('routeSearchBtn')
+      .addEventListener('click', () => {
+
+        const from = searchFrom.value.trim();
+        const to = searchTo.value.trim();
+        const time = searchTime.value;
+
+        // 出発駅の確認
+        if (from !== ORIGIN) {
+          searchMessage.textContent =
+            '現在の東京編は東京駅出発に対応しています。';
+          return;
+        }
+
+        // 目的地の確認
+        if (!to || !D.info[to]) {
+          searchMessage.textContent =
+            '登録されている駅名を入力してください。';
+          return;
+        }
+
+        if (to === from) {
+          searchMessage.textContent =
+            '出発駅と目的地が同じです。';
+          return;
+        }
+
+        if (!D.parents[to] || !D.parents[to].length) {
+          searchMessage.textContent =
+            'この駅までの経路データがありません。';
+          return;
+        }
+
+        if (!time) {
+          searchMessage.textContent =
+            '検索開始時間を入力してください。';
+          return;
+        }
+
+        // 既存の駅選択・経路強調機能を利用
+        select(to);
+
+        // 料金を表示
+        updateFare(from, to);
+
+        // 選択したきっぷを記録
+        const selectedTicket = ticketType.value;
+
+        searchMessage.textContent =
+          to + '駅への経路を表示しました。' +
+          '（' +
+          (selectedTicket === '18'
+            ? '青春18きっぷ'
+            : '通常運賃') +
+          '）';
+
+      });
+
+    // Enterキーでも検索
+    searchTo.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        document.getElementById('routeSearchBtn').click();
+      }
+    });
+
     simulate();
     setInterval(function () {
       simulate();
